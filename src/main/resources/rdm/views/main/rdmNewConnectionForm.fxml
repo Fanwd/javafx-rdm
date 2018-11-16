@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:id="rootPane"
+           fx:controller="com.fwd.rdm.controller.main.RdmNewConnectionFormController">
+    <GridPane fx:id="newConnectionPane" alignment="CENTER" hgap="20" vgap="15">
+        <padding>
+            <Insets top="40" left="40" right="40" bottom="40"></Insets>
+        </padding>
+        <columnConstraints>
+            <!--标签右对齐，输入框左对齐-->
+            <ColumnConstraints halignment="RIGHT"></ColumnConstraints>
+            <ColumnConstraints halignment="LEFT"></ColumnConstraints>
+        </columnConstraints>
+        <!--表单-->
+        <Label text="Name:" GridPane.columnIndex="0" GridPane.rowIndex="0"></Label>
+        <TextField fx:id="name" text="testRedis" GridPane.columnIndex="1" GridPane.rowIndex="0"></TextField>
+        <Label text="IP:" GridPane.columnIndex="0" GridPane.rowIndex="1"></Label>
+        <TextField fx:id="ip" text="localhost" GridPane.columnIndex="1" GridPane.rowIndex="1"></TextField>
+        <Label text="Port:" GridPane.columnIndex="0" GridPane.rowIndex="2"></Label>
+        <TextField fx:id="port" text="6379" GridPane.columnIndex="1" GridPane.rowIndex="2"></TextField>
+        <Label text="Password:" GridPane.columnIndex="0" GridPane.rowIndex="3"></Label>
+        <TextField fx:id="auth" GridPane.columnIndex="1" GridPane.rowIndex="3"></TextField>
+        <Label fx:id="messageLabel" wrapText="true" GridPane.columnIndex="0" GridPane.columnSpan="2"
+               GridPane.rowIndex="4" GridPane.hgrow="ALWAYS" GridPane.rowSpan="3"></Label>
+        <HBox GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2" spacing="15">
+            <Button text="Test Connection" onAction="#testConnection"></Button>
+            <Button text="Add" onAction="#add"></Button>
+            <Button text="Cancel" onAction="#cancel"></Button>
+        </HBox>
+    </GridPane>
+</StackPane>

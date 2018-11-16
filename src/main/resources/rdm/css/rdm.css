@@ -1,0 +1,11 @@
+.root {
+    -fx-font-family: "Roboto";
+    -fx-font-size: 14px;
+    -fx-font-smoothing-type: gray;
+}
+
+.glyph-icon {
+    -fx-font-family: "FontAwesome";
+    /*图标颜色*/
+    /*-fx-fill: #704b80;*/
+}

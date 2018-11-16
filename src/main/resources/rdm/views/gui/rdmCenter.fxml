@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<ScrollPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.fwd.rdm.controller.gui.RdmCenterController"
+            fitToHeight="true" fitToWidth="true">
+    <padding>
+        <Insets left="10" right="10" top="15" bottom="15"/>
+    </padding>
+    <VBox fx:id="rootBox" visible="false" spacing="10" alignment="TOP_LEFT">
+        <GridPane fx:id="gridPane" alignment="CENTER_LEFT" hgap="10" vgap="10">
+            <columnConstraints>
+                <!--第一列右对齐，第二列左对齐-->
+                <ColumnConstraints halignment="RIGHT"/>
+                <ColumnConstraints halignment="LEFT"/>
+            </columnConstraints>
+            <Label fx:id="keyTypeLabel" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="keyTextField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            <Label text="TTL:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+            <Label text="Value-size:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <Label fx:id="valueSizeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            <Label text="View as:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <ChoiceBox value="Text" fx:id="viewType" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="Text"/>
+                        <String fx:value="Json"/>
+                    </FXCollections>
+                </items>
+            </ChoiceBox>
+        </GridPane>
+        <Separator orientation="HORIZONTAL"></Separator>
+        <TextArea fx:id="valueTextArea" wrapText="true"/>
+        <HBox alignment="CENTER_RIGHT">
+            <Button text="save" onAction="#save"></Button>
+        </HBox>
+    </VBox>
+</ScrollPane>
