@@ -7,6 +7,7 @@ import com.fwd.rdm.uicomponents.ConnectionTreeCell;
 import com.fwd.rdm.utils.LoggerUtils;
 import com.fwd.rdm.views.gui.RdmLeftMenuView;
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
@@ -32,6 +33,8 @@ public class RdmAddController {
     @FXML
     private ChoiceBox<String> typeChoiceBox;
     @FXML
+    private TextArea fieldIdTextArea;
+    @FXML
     private TextArea valueTextArea;
 
     @Autowired
@@ -47,7 +50,8 @@ public class RdmAddController {
 
     @FXML
     public void initialize() {
-
+        Bindings.when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.STRING.getType()))
+                .then(true).otherwise(false);
     }
 
     public void setTreeItem(TreeItem<ConnectionTreeCell.TreeItemData> treeItem) {

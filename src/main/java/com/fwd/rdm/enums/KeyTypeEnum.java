@@ -36,4 +36,8 @@ public enum KeyTypeEnum {
         }
         return OTHOR;
     }
+
+    public String getType() {
+        return this.type;
+    }
 }
