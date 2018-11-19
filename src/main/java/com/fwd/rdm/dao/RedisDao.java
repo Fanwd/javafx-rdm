@@ -132,6 +132,14 @@ public class RedisDao {
         return redisCommands.get(key);
     }
 
+    public Map<String, String> hgetAll(ConnectionProperties connectionProperties, String key) {
+        int dbIndex = connectionProperties.getDbIndex();
+        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
+        RedisCommands<String, String> redisCommands = connection.sync();
+        redisCommands.select(dbIndex);
+        return redisCommands.hgetall(key);
+    }
+
     public boolean set(ConnectionProperties connectionProperties, String key, String value) {
         int dbIndex = connectionProperties.getDbIndex();
         StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);

@@ -3,7 +3,9 @@
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.*?>
+<?import java.lang.Double?>
 <?import java.lang.String?>
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
@@ -23,20 +25,51 @@
             <TextField fx:id="keyTextField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
             <Label text="TTL:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-            <Label text="Value-size:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-            <Label fx:id="valueSizeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-            <Label text="View as:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-            <ChoiceBox value="Text" fx:id="viewType" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Text"/>
-                        <String fx:value="Json"/>
-                    </FXCollections>
-                </items>
-            </ChoiceBox>
         </GridPane>
         <Separator orientation="HORIZONTAL"></Separator>
-        <TextArea fx:id="valueTextArea" wrapText="true"/>
+        <VBox fx:id="hashBox" visible="true" managed="true">
+            <!--field显示-->
+            <TableView fx:id="hashTableView">
+                <columns>
+                    <TableColumn text="Index">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="index"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Field">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="field"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                    <TableColumn text="Value">
+                        <cellValueFactory>
+                            <PropertyValueFactory property="value"/>
+                        </cellValueFactory>
+                    </TableColumn>
+                </columns>
+            </TableView>
+        </VBox>
+        <VBox>
+            <!--value显示-->
+            <StackPane>
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Value-size:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                    <Label fx:id="valueSizeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                </HBox>
+                <HBox alignment="CENTER_RIGHT">
+                    <Label text="View as:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                    <ChoiceBox value="Text" fx:id="viewType" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Text"/>
+                                <String fx:value="Json"/>
+                            </FXCollections>
+                        </items>
+                    </ChoiceBox>
+                </HBox>
+            </StackPane>
+            <TextArea fx:id="valueTextArea" wrapText="true"/>
+        </VBox>
         <HBox alignment="CENTER_RIGHT">
             <Button text="save" onAction="#save"></Button>
         </HBox>

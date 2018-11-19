@@ -3,6 +3,7 @@ package com.fwd.rdm.service.impl;
 import com.fwd.rdm.dao.RedisDao;
 import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.data.domain.RedisData;
+import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.service.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,9 +41,19 @@ public class RedisServiceImpl implements RedisService {
     public RedisData getRedisDataByKey(ConnectionProperties connectionProperties, String key) {
         // 查询key类型
         String type = redisDao.type(connectionProperties, key);
-        Long ttl = redisDao.ttl(connectionProperties, key);
-        String value = redisDao.get(connectionProperties, key);
-        return new RedisData(key, type, ttl, value);
+        KeyTypeEnum keyTypeEnum = KeyTypeEnum.typeOf(type);
+        if (KeyTypeEnum.STRING.equals(keyTypeEnum)) {
+            Long ttl = redisDao.ttl(connectionProperties, key);
+            String value = redisDao.get(connectionProperties, key);
+            return new RedisData(key, type, ttl, value, null);
+        } else if (KeyTypeEnum.HASH.equals(keyTypeEnum)) {
+            Long ttl = redisDao.ttl(connectionProperties, key);
+            Map<String, String> value = redisDao.hgetAll(connectionProperties, key);
+            return new RedisData(key, type, ttl, null, value);
+        } else {
+            return new RedisData();
+        }
+
     }
 
     @Override

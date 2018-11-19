@@ -1,7 +1,11 @@
 package com.fwd.rdm.data.domain;
 
+import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
+
+import java.util.ArrayList;
 
 /**
  * @Author: fanwd
@@ -15,6 +19,8 @@ public class RedisObservableData {
     private StringProperty value = new SimpleStringProperty();
     private StringProperty ttl = new SimpleStringProperty();
     private StringProperty size = new SimpleStringProperty();
+    private StringProperty field = new SimpleStringProperty();
+    private ObservableList<HashData> hashDataList = new ObservableListWrapper<>(new ArrayList<>());
 
     public String getType() {
         return type.get();
@@ -74,5 +80,25 @@ public class RedisObservableData {
 
     public void setSize(String size) {
         this.size.set(size);
+    }
+
+    public String getField() {
+        return field.get();
+    }
+
+    public StringProperty fieldProperty() {
+        return field;
+    }
+
+    public void setField(String field) {
+        this.field.set(field);
+    }
+
+    public ObservableList<HashData> getHashDataList() {
+        return hashDataList;
+    }
+
+    public void setHashDataList(ObservableList<HashData> hashDataList) {
+        this.hashDataList = hashDataList;
     }
 }

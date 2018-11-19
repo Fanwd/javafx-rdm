@@ -2,17 +2,18 @@ package com.fwd.rdm.controller.gui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fwd.rdm.data.domain.ConnectionProperties;
+import com.fwd.rdm.data.domain.HashData;
 import com.fwd.rdm.data.domain.RedisData;
 import com.fwd.rdm.data.domain.RedisObservableData;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.utils.LoggerUtils;
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -20,6 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @Author: fanwd
@@ -65,6 +70,11 @@ public class RdmCenterController {
     @FXML
     ChoiceBox<String> viewType;
     /**
+     * Hash数据列表
+     */
+    @FXML
+    TableView<HashData> hashTableView;
+    /**
      * 数据内容
      */
     @FXML
@@ -99,7 +109,16 @@ public class RdmCenterController {
         redisObservableData.valueProperty().addListener((observable, oldValue, newValue) -> {
             valueTextArea.setText(newValue);
         });
+        redisObservableData.getHashDataList().addListener((ListChangeListener<HashData>) c -> {
+            if (c.next()) {
+                ObservableList<? extends HashData> allList = c.getList();
+                List<HashData> dataList = allList.stream().map(item -> (HashData) item).collect(Collectors.toList());
+                hashTableView.setItems(FXCollections.observableArrayList(dataList));
+            }
+        });
+        hashTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener) c -> {
 
+        });
     }
 
     /**
@@ -121,19 +140,38 @@ public class RdmCenterController {
         RedisData redisData = redisService.getRedisDataByKey(connectionProperties, key);
 
         String value = redisData.getValue();
-        redisObservableData.setType(redisData.getType());
-        redisObservableData.setKey(redisData.getKey());
-        redisObservableData.setValue(redisData.getValue());
-        redisObservableData.setTtl(String.valueOf(redisData.getTtl()));
-        if (null == value) {
-            redisObservableData.setSize("0");
+        String type = redisData.getType();
+        KeyTypeEnum keyTypeEnum = KeyTypeEnum.typeOf(type);
+        if (KeyTypeEnum.STRING.equals(keyTypeEnum)) {
+            redisObservableData.setType(type);
+            redisObservableData.setKey(redisData.getKey());
+            redisObservableData.setValue(redisData.getValue());
+            redisObservableData.setTtl(String.valueOf(redisData.getTtl()));
+            if (null == value) {
+                redisObservableData.setSize("0");
+            } else {
+                redisObservableData.setSize(String.valueOf(value.getBytes(Charset.forName("UTF-8")).length));
+            }
+
+            printPrettyValue(value);
+
+            viewType.setOnAction(event -> printPrettyValue(value));
+        } else if (KeyTypeEnum.HASH.equals(keyTypeEnum)) {
+            redisObservableData.setType(type);
+            redisObservableData.setKey(redisData.getKey());
+
+            Map<String, String> hashData = redisData.getHashData();
+            List<HashData> data = new ArrayList<>();
+            long index = 1;
+            for (Map.Entry<String, String> entry : hashData.entrySet()) {
+                HashData item = new HashData(index++, entry.getKey(), entry.getValue());
+                data.add(item);
+            }
+            redisObservableData.getHashDataList().clear();
+            redisObservableData.getHashDataList().addAll(data);
         } else {
-            redisObservableData.setSize(String.valueOf(value.getBytes(Charset.forName("UTF-8")).length));
+            loggerUtils.alertWarn("Key [" + key + "] not supported");
         }
-
-        printPrettyValue(value);
-
-        viewType.setOnAction(event -> printPrettyValue(value));
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.fwd.rdm.data.domain;
 
+import java.util.Map;
+
 /**
  * @Author: fanwd
  * @Description:
@@ -12,14 +14,17 @@ public class RedisData {
     private Long ttl;
     private String value;
 
+    private Map<String, String> hashData;
+
     public RedisData() {
     }
 
-    public RedisData(String key, String type, Long ttl, String value) {
+    public RedisData(String key, String type, Long ttl, String value, Map<String, String> hashData) {
         this.key = key;
         this.type = type;
         this.ttl = ttl;
         this.value = value;
+        this.hashData = hashData;
     }
 
     public String getKey() {
@@ -52,5 +57,13 @@ public class RedisData {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Map<String, String> getHashData() {
+        return hashData;
+    }
+
+    public void setHashData(Map<String, String> hashData) {
+        this.hashData = hashData;
     }
 }
