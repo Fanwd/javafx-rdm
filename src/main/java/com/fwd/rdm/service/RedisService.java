@@ -34,6 +34,11 @@ public interface RedisService {
     boolean set(ConnectionProperties connectionProperties, String key, String value);
 
     /**
+     * 保存hash数据
+     */
+    boolean hset(ConnectionProperties connectionProperties, String key, String field, String value);
+
+    /**
      * 删除
      */
     long delete(ConnectionProperties connectionProperties, String pattern);

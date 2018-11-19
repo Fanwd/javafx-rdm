@@ -51,6 +51,11 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public boolean hset(ConnectionProperties connectionProperties, String key, String field, String value) {
+        return redisDao.hset(connectionProperties, key, field, value);
+    }
+
+    @Override
     public long delete(ConnectionProperties connectionProperties, String pattern) {
         List<String> keysList = redisDao.keys(connectionProperties, pattern);
         if (!keysList.isEmpty()) {

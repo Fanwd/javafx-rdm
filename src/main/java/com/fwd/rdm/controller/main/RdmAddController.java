@@ -9,10 +9,7 @@ import com.fwd.rdm.views.gui.RdmLeftMenuView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,9 @@ public class RdmAddController {
     @FXML
     private ChoiceBox<String> typeChoiceBox;
     @FXML
-    private TextArea fieldIdTextArea;
+    private Label fieldLabel;
+    @FXML
+    private TextArea fieldTextArea;
     @FXML
     private TextArea valueTextArea;
 
@@ -50,8 +49,16 @@ public class RdmAddController {
 
     @FXML
     public void initialize() {
-        Bindings.when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.STRING.getType()))
-                .then(true).otherwise(false);
+        // 数据类型为HASH时显示field，否则隐藏field
+        // 设置可见性
+        fieldLabel.visibleProperty().bind(Bindings.when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.HASH.getType()))
+                .then(true).otherwise(false));
+        fieldTextArea.visibleProperty().bind(Bindings.when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.HASH.getType()))
+                .then(true).otherwise(false));
+        // 设置隐藏性
+
+        fieldTextArea.managedProperty().bind(Bindings.when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.HASH.getType()))
+                .then(true).otherwise(false));
     }
 
     public void setTreeItem(TreeItem<ConnectionTreeCell.TreeItemData> treeItem) {
@@ -63,6 +70,7 @@ public class RdmAddController {
         String key = keyTextField.getText();
         String type = typeChoiceBox.getValue();
         String value = valueTextArea.getText();
+        String field = fieldTextArea.getText();
         KeyTypeEnum itemTypeEnum = KeyTypeEnum.typeOf(type);
         ConnectionProperties connectionProperties = treeItem.getValue().getConnectionPropertiesObjectProperty();
         if (StringUtils.isEmpty(key)) {
@@ -74,7 +82,18 @@ public class RdmAddController {
             return;
         }
         if (KeyTypeEnum.STRING.equals(itemTypeEnum)) {
+            // 添加string类型数据
             if (redisService.set(connectionProperties, key, value)) {
+                rdmLeftMenuView.refreshCell(treeItem);
+                this.close();
+            }
+        } else if (KeyTypeEnum.HASH.equals(itemTypeEnum)) {
+            // 添加hash类型数据
+            if (StringUtils.isEmpty(field)) {
+                loggerUtils.alertError("fieldId is null!!");
+                return;
+            }
+            if (redisService.hset(connectionProperties, key, field, value)) {
                 rdmLeftMenuView.refreshCell(treeItem);
                 this.close();
             }

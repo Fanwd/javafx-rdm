@@ -145,6 +145,14 @@ public class RedisDao {
         }
     }
 
+    public boolean hset(ConnectionProperties connectionProperties, String key, String field, String value) {
+        int dbIndex = connectionProperties.getDbIndex();
+        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
+        RedisCommands<String, String> redisCommands = connection.sync();
+        redisCommands.select(dbIndex);
+        return redisCommands.hset(key, field, value);
+    }
+
     public long delete(ConnectionProperties connectionProperties, String... keys) {
         int dbIndex = connectionProperties.getDbIndex();
         StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);

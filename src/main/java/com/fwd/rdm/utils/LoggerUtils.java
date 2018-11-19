@@ -27,10 +27,6 @@ public class LoggerUtils {
 
     private Label label = new Label();
 
-//    private Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
-//    private Alert warnAlert = new Alert(Alert.AlertType.WARNING);
-//    private Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-
     public Label getLabel() {
         return label;
     }
