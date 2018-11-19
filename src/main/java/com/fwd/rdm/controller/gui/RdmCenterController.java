@@ -9,6 +9,7 @@ import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.utils.LoggerUtils;
 import de.felixroske.jfxsupport.FXMLController;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -18,6 +19,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -70,10 +72,20 @@ public class RdmCenterController {
     @FXML
     ChoiceBox<String> viewType;
     /**
+     * HASH数据显示box
+     */
+    @FXML
+    VBox hashBox;
+    /**
      * Hash数据列表
      */
     @FXML
     TableView<HashData> hashTableView;
+    /**
+     * Hash数据field
+     */
+    @FXML
+    TextArea fieldTextArea;
     /**
      * 数据内容
      */
@@ -109,6 +121,19 @@ public class RdmCenterController {
         redisObservableData.valueProperty().addListener((observable, oldValue, newValue) -> {
             valueTextArea.setText(newValue);
         });
+        // 显示hash数据
+        hashBox.managedProperty()
+                .bind(Bindings
+                        .when(redisObservableData.typeProperty().isEqualToIgnoreCase(KeyTypeEnum.HASH.getType()))
+                        .then(true)
+                        .otherwise(false));
+        hashBox.visibleProperty()
+                .bind(Bindings
+                        .when(redisObservableData.typeProperty().isEqualToIgnoreCase(KeyTypeEnum.HASH.getType()))
+                        .then(true)
+                        .otherwise(false));
+
+        fieldTextArea.textProperty().bind(redisObservableData.fieldProperty());
         redisObservableData.getHashDataList().addListener((ListChangeListener<HashData>) c -> {
             if (c.next()) {
                 ObservableList<? extends HashData> allList = c.getList();
@@ -116,8 +141,17 @@ public class RdmCenterController {
                 hashTableView.setItems(FXCollections.observableArrayList(dataList));
             }
         });
-        hashTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener) c -> {
-
+        // 选中时显示field和value
+        hashTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<HashData>) c -> {
+            if (c.next()) {
+                List<? extends HashData> selectedData = c.getAddedSubList();
+                if (!selectedData.isEmpty()) {
+                    HashData hashData = selectedData.get(0);
+                    redisObservableData.setField(hashData.getField());
+                    this.printPrettyValue(hashData.getValue());
+                    redisObservableData.setSize(String.valueOf(hashData.getValue().getBytes(Charset.forName("UTF-8")).length));
+                }
+            }
         });
     }
 
@@ -139,14 +173,14 @@ public class RdmCenterController {
         // TODO add by fanwd at 2018/11/13-19:07 区分key类型
         RedisData redisData = redisService.getRedisDataByKey(connectionProperties, key);
 
-        String value = redisData.getValue();
         String type = redisData.getType();
         KeyTypeEnum keyTypeEnum = KeyTypeEnum.typeOf(type);
+        redisObservableData.setType(type);
+        redisObservableData.setKey(redisData.getKey());
+        redisObservableData.setTtl(String.valueOf(redisData.getTtl()));
         if (KeyTypeEnum.STRING.equals(keyTypeEnum)) {
-            redisObservableData.setType(type);
-            redisObservableData.setKey(redisData.getKey());
+            String value = redisData.getValue();
             redisObservableData.setValue(redisData.getValue());
-            redisObservableData.setTtl(String.valueOf(redisData.getTtl()));
             if (null == value) {
                 redisObservableData.setSize("0");
             } else {
@@ -157,9 +191,10 @@ public class RdmCenterController {
 
             viewType.setOnAction(event -> printPrettyValue(value));
         } else if (KeyTypeEnum.HASH.equals(keyTypeEnum)) {
-            redisObservableData.setType(type);
-            redisObservableData.setKey(redisData.getKey());
-
+            // 清空field和value
+            redisObservableData.setField(null);
+            redisObservableData.setValue(null);
+            redisObservableData.setSize(null);
             Map<String, String> hashData = redisData.getHashData();
             List<HashData> data = new ArrayList<>();
             long index = 1;
@@ -169,6 +204,7 @@ public class RdmCenterController {
             }
             redisObservableData.getHashDataList().clear();
             redisObservableData.getHashDataList().addAll(data);
+            viewType.setOnAction(event -> printPrettyValue(redisData.getValue()));
         } else {
             loggerUtils.alertWarn("Key [" + key + "] not supported");
         }
@@ -178,6 +214,9 @@ public class RdmCenterController {
      * 美化输出json
      */
     private void printPrettyValue(String value) {
+        if (StringUtils.isEmpty(value)) {
+            return;
+        }
         if (VIEW_JSON.equalsIgnoreCase(viewType.getValue())) {
             // 美化json输出格式
             try {

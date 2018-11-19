@@ -27,7 +27,7 @@
             <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         </GridPane>
         <Separator orientation="HORIZONTAL"></Separator>
-        <VBox fx:id="hashBox" visible="true" managed="true">
+        <VBox fx:id="hashBox" visible="true" managed="true" spacing="5">
             <!--field显示-->
             <TableView fx:id="hashTableView">
                 <columns>
@@ -48,8 +48,10 @@
                     </TableColumn>
                 </columns>
             </TableView>
+            <Label text="Field:"></Label>
+            <TextArea fx:id="fieldTextArea" wrapText="true"></TextArea>
         </VBox>
-        <VBox>
+        <VBox spacing="5" VBox.vgrow="ALWAYS">
             <!--value显示-->
             <StackPane>
                 <HBox alignment="CENTER_LEFT">
@@ -68,7 +70,7 @@
                     </ChoiceBox>
                 </HBox>
             </StackPane>
-            <TextArea fx:id="valueTextArea" wrapText="true"/>
+            <TextArea fx:id="valueTextArea" wrapText="true" VBox.vgrow="ALWAYS"/>
         </VBox>
         <HBox alignment="CENTER_RIGHT">
             <Button text="save" onAction="#save"></Button>
