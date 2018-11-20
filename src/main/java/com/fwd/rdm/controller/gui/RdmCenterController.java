@@ -20,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -45,72 +44,72 @@ public class RdmCenterController {
      * 根容器
      */
     @FXML
-    private VBox rootBox;
+    public VBox rootBox;
     /**
      * 表格
      */
     @FXML
-    private GridPane gridPane;
+    public GridPane gridPane;
     /**
      * 缓存key类型
      */
     @FXML
-    private Label keyTypeLabel;
+    public Label keyTypeLabel;
     /**
      * 缓存key
      */
     @FXML
-    private TextField keyTextField;
+    public TextField keyTextField;
     /**
      * key剩余时间
      */
     @FXML
-    private Label ttlLabel;
+    public Label ttlLabel;
     /**
      * 数据大小
      */
     @FXML
-    Label valueSizeLabel;
+    public Label valueSizeLabel;
     /**
      * 打印类型 Text Json
      */
     @FXML
-    ChoiceBox<String> viewType;
+    public ChoiceBox<String> viewType;
     /**
      * HASH数据显示box
      */
     @FXML
-    HBox hashTableBox;
+    public HBox hashTableBox;
     /**
      * 拖拽条
      */
     @FXML
-    Separator dragLine;
+    public Separator dragLine;
     /**
      * value显示box
      */
     @FXML
-    VBox valueBox;
+    public VBox valueBox;
     /**
      * Hash数据列表
      */
     @FXML
-    TableView<HashData> hashTableView;
+    public TableView<HashData> hashTableView;
     /**
      * Hash数据field显示
      */
     @FXML
-    VBox hashFieldBox;
+    public VBox hashFieldBox;
     /**
      * Hash数据field
      */
     @FXML
-    TextArea fieldTextArea;
+    public TextArea fieldTextArea;
     /**
      * 数据内容
      */
     @FXML
-    private TextArea valueTextArea;
+    public TextArea valueTextArea;
 
     private static final String VIEW_TEXT = "Text";
     private static final String VIEW_JSON = "Json";
@@ -149,14 +148,14 @@ public class RdmCenterController {
 
     @FXML
     public void initialize() {
-        // 宽自适应
-        GridPane.setHgrow(keyTextField, Priority.ALWAYS);
 
-        // value文本框自适应
-        VBox.setVgrow(valueTextArea, Priority.ALWAYS);
-
+        // 公共初始化--开始
         DragUtils.vResizeDrag(hashTableBox, dragLine, valueBox);
-        // 属性绑定
+        // 监听刷新数据
+        rdmCenterObservableData.updateDateFlagProperty().addListener((observable, oldValue, newValue) -> {
+            this.initData(currentConnectionProperties, currentKey);
+        });
+        // 属性绑定-公共属性
         keyTypeLabel.textProperty().bind(redisObservableData.typeProperty());
         keyTextField.textProperty().bind(redisObservableData.keyProperty());
         ttlLabel.textProperty().bind(redisObservableData.ttlProperty());
@@ -164,21 +163,18 @@ public class RdmCenterController {
         redisObservableData.valueProperty().addListener((observable, oldValue, newValue) -> {
             valueTextArea.setText(newValue);
         });
-        // 显示hash数据
+        // 公共初始化--结束
+
+        // HASH类型数据初始化--开始
         hashTableBox.managedProperty()
                 .bind(Bindings
                         .when(redisObservableData.typeProperty().isEqualToIgnoreCase(KeyTypeEnum.HASH.getType()))
                         .then(true)
                         .otherwise(false));
-        hashTableBox.visibleProperty()
-                .bind(Bindings
-                        .when(redisObservableData.typeProperty().isEqualToIgnoreCase(KeyTypeEnum.HASH.getType()))
-                        .then(true)
-                        .otherwise(false));
+        hashTableBox.visibleProperty().bind(hashTableBox.managedProperty());
         hashFieldBox.managedProperty().bind(hashTableBox.managedProperty());
         hashFieldBox.visibleProperty().bind(hashTableBox.visibleProperty());
         dragLine.visibleProperty().bind(hashTableBox.visibleProperty());
-
         fieldTextArea.textProperty().bind(redisObservableData.fieldProperty());
         redisObservableData.getHashDataList().addListener((ListChangeListener<HashData>) c -> {
             if (c.next()) {
@@ -201,11 +197,15 @@ public class RdmCenterController {
                 }
             }
         });
+        // HASH类型数据初始化--结束
 
-        // 监听刷新数据
-        rdmCenterObservableData.updateDateFlagProperty().addListener((observable, oldValue, newValue) -> {
-            this.initData(currentConnectionProperties, currentKey);
-        });
+        // LIST类型数据初始化--开始
+        // LIST类型数据初始化--结束
+        // SET类型数据初始化--开始
+        // SET类型数据初始化--结束
+        // ZSET类型数据初始化--开始
+        // ZSET类型数据初始化--结束
+
     }
 
     /**
