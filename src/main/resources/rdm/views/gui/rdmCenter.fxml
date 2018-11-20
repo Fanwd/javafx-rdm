@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import java.lang.Double?>
 <?import java.lang.String?>
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <ScrollPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.fwd.rdm.controller.gui.RdmCenterController"
@@ -27,9 +28,12 @@
             <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
         </GridPane>
         <Separator orientation="HORIZONTAL"></Separator>
-        <VBox fx:id="hashBox" visible="true" managed="true" spacing="5">
+        <HBox fx:id="hashTableBox" visible="true" managed="true" spacing="5">
             <!--field显示-->
-            <TableView fx:id="hashTableView">
+            <TableView fx:id="hashTableView" prefHeight="250" HBox.hgrow="ALWAYS">
+                <maxHeight>
+                    <Double fx:constant="MAX_VALUE"/>
+                </maxHeight>
                 <columns>
                     <TableColumn text="Index">
                         <cellValueFactory>
@@ -41,17 +45,49 @@
                             <PropertyValueFactory property="field"/>
                         </cellValueFactory>
                     </TableColumn>
-                    <TableColumn text="Value">
+                    <TableColumn text="Value" prefWidth="400">
+                        <maxWidth>
+                            <Double fx:constant="MAX_VALUE"></Double>
+                        </maxWidth>
                         <cellValueFactory>
                             <PropertyValueFactory property="value"/>
                         </cellValueFactory>
                     </TableColumn>
                 </columns>
             </TableView>
-            <Label text="Field:"></Label>
-            <TextArea fx:id="fieldTextArea" wrapText="true"></TextArea>
-        </VBox>
-        <VBox spacing="5" VBox.vgrow="ALWAYS">
+            <VBox prefWidth="100" alignment="TOP_CENTER" spacing="5" >
+                <Button text="Add" onAction="#addHash">
+                    <maxWidth>
+                        <Double fx:constant="MAX_VALUE"></Double>
+                    </maxWidth>
+                    <graphic>
+                        <FontAwesomeIconView fill="green" glyphName="PLUS_CIRCLE"></FontAwesomeIconView>
+                    </graphic>
+                </Button>
+                <Button text="Delete" onAction="#deleteHash">
+                    <maxWidth>
+                        <Double fx:constant="MAX_VALUE"></Double>
+                    </maxWidth>
+                    <graphic>
+                        <FontAwesomeIconView fill="red" glyphName="TRASH"></FontAwesomeIconView>
+                    </graphic>
+                </Button>
+                <Button text="Refresh" onAction="#refreshHash">
+                    <maxWidth>
+                        <Double fx:constant="MAX_VALUE"></Double>
+                    </maxWidth>
+                    <graphic>
+                        <FontAwesomeIconView fill="lightgreen" glyphName="REFRESH"/>
+                    </graphic>
+                </Button>
+            </VBox>
+        </HBox>
+        <VBox fx:id="valueBox" spacing="5" VBox.vgrow="ALWAYS">
+            <Separator fx:id="dragLine" orientation="HORIZONTAL"></Separator>
+            <VBox fx:id="hashFieldBox" spacing="5">
+                <Label text="Field:"></Label>
+                <TextArea fx:id="fieldTextArea" editable="false" wrapText="true"></TextArea>
+            </VBox>
             <!--value显示-->
             <StackPane>
                 <HBox alignment="CENTER_LEFT">
@@ -73,7 +109,11 @@
             <TextArea fx:id="valueTextArea" wrapText="true" VBox.vgrow="ALWAYS"/>
         </VBox>
         <HBox alignment="CENTER_RIGHT">
-            <Button text="save" onAction="#save"></Button>
+            <Button text="save" onAction="#save">
+                <graphic>
+                    <FontAwesomeIconView glyphName="FLOPPY_ALT"/>
+                </graphic>
+            </Button>
         </HBox>
     </VBox>
 </ScrollPane>

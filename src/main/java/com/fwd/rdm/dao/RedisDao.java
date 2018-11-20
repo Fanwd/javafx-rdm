@@ -92,10 +92,7 @@ public class RedisDao {
      * @return
      */
     public List<String> keys(ConnectionProperties connectionProperties, String pattern) {
-        int dbIndex = connectionProperties.getDbIndex();
-        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
-        RedisCommands<String, String> redisCommands = connection.sync();
-        redisCommands.select(dbIndex);
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.keys(pattern);
     }
 
@@ -103,10 +100,7 @@ public class RedisDao {
      * 查询key类型
      */
     public String type(ConnectionProperties connectionProperties, String key) {
-        int dbIndex = connectionProperties.getDbIndex();
-        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
-        RedisCommands<String, String> redisCommands = connection.sync();
-        redisCommands.select(dbIndex);
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.type(key);
     }
 
@@ -114,10 +108,7 @@ public class RedisDao {
      * 查询key剩余时间
      */
     public Long ttl(ConnectionProperties connectionProperties, String key) {
-        int dbIndex = connectionProperties.getDbIndex();
-        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
-        RedisCommands<String, String> redisCommands = connection.sync();
-        redisCommands.select(dbIndex);
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.ttl(key);
     }
 
@@ -125,26 +116,23 @@ public class RedisDao {
      * 查询key值
      */
     public String get(ConnectionProperties connectionProperties, String key) {
-        int dbIndex = connectionProperties.getDbIndex();
-        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
-        RedisCommands<String, String> redisCommands = connection.sync();
-        redisCommands.select(dbIndex);
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.get(key);
     }
 
+    /**
+     * 获取所有hash数据
+     */
     public Map<String, String> hgetAll(ConnectionProperties connectionProperties, String key) {
-        int dbIndex = connectionProperties.getDbIndex();
-        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
-        RedisCommands<String, String> redisCommands = connection.sync();
-        redisCommands.select(dbIndex);
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.hgetall(key);
     }
 
+    /**
+     * 保存数据
+     */
     public boolean set(ConnectionProperties connectionProperties, String key, String value) {
-        int dbIndex = connectionProperties.getDbIndex();
-        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
-        RedisCommands<String, String> redisCommands = connection.sync();
-        redisCommands.select(dbIndex);
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         String retCode = redisCommands.set(key, value);
         if (RedisReturnCode.OK.equalsIgnoreCase(retCode)) {
             return true;
@@ -153,20 +141,39 @@ public class RedisDao {
         }
     }
 
+    /**
+     * 保存Hash数据
+     */
     public boolean hset(ConnectionProperties connectionProperties, String key, String field, String value) {
-        int dbIndex = connectionProperties.getDbIndex();
-        StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
-        RedisCommands<String, String> redisCommands = connection.sync();
-        redisCommands.select(dbIndex);
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.hset(key, field, value);
     }
 
+    /**
+     * 删除数据
+     */
     public long delete(ConnectionProperties connectionProperties, String... keys) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.del(keys);
+    }
+
+    /**
+     * 删除Hash数据
+     */
+    public long hdelete(ConnectionProperties connectionProperties, String key, String field) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.hdel(key, field);
+    }
+
+    /**
+     * 获取redisCommands
+     */
+    private RedisCommands<String, String> getRedisCommands(ConnectionProperties connectionProperties) {
         int dbIndex = connectionProperties.getDbIndex();
         StatefulRedisConnection<String, String> connection = this.createConnection(connectionProperties);
         RedisCommands<String, String> redisCommands = connection.sync();
         redisCommands.select(dbIndex);
-        return redisCommands.del(keys);
+        return redisCommands;
     }
 
     private static class RedisReturnCode {

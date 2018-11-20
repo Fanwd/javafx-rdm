@@ -46,5 +46,10 @@ public interface RedisService {
     /**
      * 删除key
      */
-    public long deleteKey(ConnectionProperties connectionProperties, String key);
+    long deleteKey(ConnectionProperties connectionProperties, String key);
+
+    /**
+     * Hash删除域值
+     */
+    long hdelete(ConnectionProperties connectionProperties, String key, String field);
 }

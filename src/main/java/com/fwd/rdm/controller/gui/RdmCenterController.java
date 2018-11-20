@@ -1,13 +1,16 @@
 package com.fwd.rdm.controller.gui;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fwd.rdm.data.RdmCenterObservableData;
 import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.data.domain.HashData;
 import com.fwd.rdm.data.domain.RedisData;
 import com.fwd.rdm.data.domain.RedisObservableData;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.service.RedisService;
+import com.fwd.rdm.utils.DragUtils;
 import com.fwd.rdm.utils.LoggerUtils;
+import com.fwd.rdm.views.main.RdmAddHashView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -16,6 +19,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +28,7 @@ import org.springframework.util.StringUtils;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -75,12 +80,27 @@ public class RdmCenterController {
      * HASH数据显示box
      */
     @FXML
-    VBox hashBox;
+    HBox hashTableBox;
+    /**
+     * 拖拽条
+     */
+    @FXML
+    Separator dragLine;
+    /**
+     * value显示box
+     */
+    @FXML
+    VBox valueBox;
     /**
      * Hash数据列表
      */
     @FXML
     TableView<HashData> hashTableView;
+    /**
+     * Hash数据field显示
+     */
+    @FXML
+    VBox hashFieldBox;
     /**
      * Hash数据field
      */
@@ -96,10 +116,16 @@ public class RdmCenterController {
     private static final String VIEW_JSON = "Json";
 
     @Autowired
+    private RdmAddHashView rdmAddHashView;
+
+    @Autowired
     private RedisService redisService;
 
     @Autowired
     private LoggerUtils loggerUtils;
+
+    @Autowired
+    private RdmCenterObservableData rdmCenterObservableData;
 
     /**
      * 连接信息
@@ -107,12 +133,29 @@ public class RdmCenterController {
     private ConnectionProperties currentConnectionProperties;
 
     /**
+     * 当前显示的key值
+     */
+    private String currentKey;
+
+    /**
      * 数据信息
      */
     private RedisObservableData redisObservableData = new RedisObservableData();
 
+    /**
+     * hashTableData
+     */
+    private ObservableList<HashData> tableHashDataList = FXCollections.observableArrayList();
+
     @FXML
     public void initialize() {
+        // 宽自适应
+        GridPane.setHgrow(keyTextField, Priority.ALWAYS);
+
+        // value文本框自适应
+        VBox.setVgrow(valueTextArea, Priority.ALWAYS);
+
+        DragUtils.vResizeDrag(hashTableBox, dragLine, valueBox);
         // 属性绑定
         keyTypeLabel.textProperty().bind(redisObservableData.typeProperty());
         keyTextField.textProperty().bind(redisObservableData.keyProperty());
@@ -122,25 +165,30 @@ public class RdmCenterController {
             valueTextArea.setText(newValue);
         });
         // 显示hash数据
-        hashBox.managedProperty()
+        hashTableBox.managedProperty()
                 .bind(Bindings
                         .when(redisObservableData.typeProperty().isEqualToIgnoreCase(KeyTypeEnum.HASH.getType()))
                         .then(true)
                         .otherwise(false));
-        hashBox.visibleProperty()
+        hashTableBox.visibleProperty()
                 .bind(Bindings
                         .when(redisObservableData.typeProperty().isEqualToIgnoreCase(KeyTypeEnum.HASH.getType()))
                         .then(true)
                         .otherwise(false));
+        hashFieldBox.managedProperty().bind(hashTableBox.managedProperty());
+        hashFieldBox.visibleProperty().bind(hashTableBox.visibleProperty());
+        dragLine.visibleProperty().bind(hashTableBox.visibleProperty());
 
         fieldTextArea.textProperty().bind(redisObservableData.fieldProperty());
         redisObservableData.getHashDataList().addListener((ListChangeListener<HashData>) c -> {
             if (c.next()) {
                 ObservableList<? extends HashData> allList = c.getList();
                 List<HashData> dataList = allList.stream().map(item -> (HashData) item).collect(Collectors.toList());
-                hashTableView.setItems(FXCollections.observableArrayList(dataList));
+                tableHashDataList.clear();
+                tableHashDataList.addAll(dataList);
             }
         });
+        hashTableView.setItems(tableHashDataList);
         // 选中时显示field和value
         hashTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<HashData>) c -> {
             if (c.next()) {
@@ -153,24 +201,27 @@ public class RdmCenterController {
                 }
             }
         });
+
+        // 监听刷新数据
+        rdmCenterObservableData.updateDateFlagProperty().addListener((observable, oldValue, newValue) -> {
+            this.initData(currentConnectionProperties, currentKey);
+        });
     }
 
     /**
      * 初始化数据
      */
     public void initData(ConnectionProperties connectionProperties, String key) {
-        this.currentConnectionProperties = connectionProperties;
-        // 宽自适应
-        GridPane.setHgrow(keyTextField, Priority.ALWAYS);
+        rdmCenterObservableData.setCurrentConnectionProperties(connectionProperties);
+        rdmCenterObservableData.setCurrentKey(key);
 
-        // value文本框自适应
-        VBox.setVgrow(valueTextArea, Priority.ALWAYS);
+        this.currentConnectionProperties = connectionProperties;
+        this.currentKey = key;
 
         if (!rootBox.isVisible()) {
             rootBox.setVisible(true);
         }
 
-        // TODO add by fanwd at 2018/11/13-19:07 区分key类型
         RedisData redisData = redisService.getRedisDataByKey(connectionProperties, key);
 
         String type = redisData.getType();
@@ -240,15 +291,73 @@ public class RdmCenterController {
         String keyType = keyTypeLabel.getText();
         String key = keyTextField.getText();
         String value = valueTextArea.getText();
+        String field = fieldTextArea.getText();
         KeyTypeEnum type = KeyTypeEnum.typeOf(keyType);
         if (KeyTypeEnum.STRING.equals(type)) {
             // 字符串
             redisService.set(currentConnectionProperties, key, value);
             this.redisObservableData.setValue(value);
             loggerUtils.info("save success");
+        } else if (KeyTypeEnum.HASH.equals(type)) {
+            if (StringUtils.isEmpty(field)) {
+                loggerUtils.alertWarn("Field Not Selected");
+                return;
+            }
+            // HASH
+            redisService.hset(currentConnectionProperties, key, field, value);
+            this.redisObservableData.setValue(value);
+            ObservableList<HashData> hashDataList = this.redisObservableData.getHashDataList();
+            hashDataList.forEach(hashData -> {
+                if (hashData.getField().equals(field)) {
+                    hashData.setValue(value);
+                }
+            });
+            tableHashDataList.clear();
+            tableHashDataList.addAll(hashDataList);
         } else {
             // 暂不支持的类型
             loggerUtils.warn("Type [" + keyType + "] not supported");
         }
+    }
+
+    /**
+     * 添加hash数据
+     */
+    @FXML
+    public void addHash() {
+        rdmAddHashView.show();
+    }
+
+    /**
+     * 删除hash数据
+     */
+    @FXML
+    public void deleteHash() {
+        HashData selectedItem = hashTableView.getSelectionModel().getSelectedItem();
+        if (null == selectedItem) {
+            loggerUtils.alertWarn("Please select a data!!");
+            return;
+        }
+        String field = selectedItem.getField();
+        redisService.hdelete(currentConnectionProperties, currentKey, field);
+        ObservableList<HashData> hashDataList = redisObservableData.getHashDataList();
+        // 删除数据并重新设置行号
+        Iterator<HashData> iterator = hashDataList.iterator();
+        long index = 1;
+        while (iterator.hasNext()) {
+            HashData next = iterator.next();
+            if (next.getField().equals(field)) {
+                iterator.remove();
+            } else {
+                next.setIndex(index++);
+            }
+        }
+    }
+
+    /**
+     * 重新加载
+     */
+    public void refreshHash() {
+        this.initData(currentConnectionProperties, currentKey);
     }
 }

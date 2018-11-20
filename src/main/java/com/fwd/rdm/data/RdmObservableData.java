@@ -23,10 +23,8 @@ public class RdmObservableData {
     private ObservableList<ConnectionProperties> connectionList = new ObservableListWrapper<>(new ArrayList<>());
 
     /**
-     * 添加数据列表
+     * 添加连接数据
      */
-    private ObservableList<RedisData> redisDataList = new ObservableListWrapper<>(new ArrayList<>());
-
     public void addConnection(ConnectionProperties connectionProperties) {
         connectionList.add(connectionProperties);
     }
@@ -49,14 +47,5 @@ public class RdmObservableData {
     public ObservableList<ConnectionProperties> getConnectionList() {
         return this.connectionList;
     }
-
-    public void addRedisData(RedisData redisData) {
-        redisDataList.add(redisData);
-    }
-
-    public ObservableList<RedisData> getRedisDataList() {
-        return this.redisDataList;
-    }
-
 
 }

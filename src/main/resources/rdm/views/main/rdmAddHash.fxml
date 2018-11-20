@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:id="rootStackPane"
+           fx:controller="com.fwd.rdm.controller.main.RdmAddHashController">
+    <VBox spacing="10" alignment="CENTER_LEFT">
+        <padding>
+            <Insets top="30" bottom="30" left="30" right="30"></Insets>
+        </padding>
+        <Label text="Field:"></Label>
+        <TextArea fx:id="fieldTextArea"/>
+        <Label text="Value:"/>
+        <TextArea fx:id="valueTextArea"/>
+        <HBox spacing="20" alignment="CENTER_RIGHT">
+            <Button text="Add" onAction="#add" prefWidth="100"></Button>
+            <Button text="Cancel" onAction="#cancel" prefWidth="100"></Button>
+        </HBox>
+    </VBox>
+</StackPane>

@@ -81,4 +81,9 @@ public class RedisServiceImpl implements RedisService {
         return redisDao.delete(connectionProperties, key);
     }
 
+    @Override
+    public long hdelete(ConnectionProperties connectionProperties, String key, String field) {
+        return redisDao.hdelete(connectionProperties, key, field);
+    }
+
 }
