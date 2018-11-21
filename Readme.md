@@ -7,6 +7,7 @@ An redis client tools developed with JavaFX
 #### 项目功能
 1. 支持新建/删除连接;
 2. 支持连接信息的自动保存、加载；
+3. 支持数据类型：string、hash、list
 
 #### 软件架构
 
