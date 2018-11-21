@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.fwd.rdm.controller.gui.RdmStringModuleController"
+      fx:id="rootBox" visible="true" spacing="10" alignment="TOP_LEFT">
+    <GridPane fx:id="gridPane" alignment="CENTER_LEFT" hgap="10" vgap="10">
+        <columnConstraints>
+            <!--第一列右对齐，第二列左对齐-->
+            <ColumnConstraints halignment="RIGHT"/>
+            <ColumnConstraints halignment="LEFT"/>
+        </columnConstraints>
+        <Label text="hash" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="keyTextField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"
+                   GridPane.hgrow="ALWAYS"/>
+        <Label text="TTL:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+    </GridPane>
+    <Separator orientation="HORIZONTAL"></Separator>
+    <VBox fx:id="valueBox" spacing="5" VBox.vgrow="ALWAYS">
+        <!--value显示-->
+        <StackPane>
+            <HBox alignment="CENTER_LEFT">
+                <Label text="Value:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT">
+                <ChoiceBox value="Text" fx:id="viewType" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Text"/>
+                            <String fx:value="JSON"/>
+                        </FXCollections>
+                    </items>
+                </ChoiceBox>
+            </HBox>
+        </StackPane>
+        <TextArea fx:id="valueTextArea" wrapText="true" VBox.vgrow="ALWAYS"/>
+    </VBox>
+    <HBox alignment="CENTER_RIGHT">
+        <Button text="save" onAction="#save">
+            <graphic>
+                <FontAwesomeIconView glyphName="FLOPPY_ALT"/>
+            </graphic>
+        </Button>
+    </HBox>
+</VBox>

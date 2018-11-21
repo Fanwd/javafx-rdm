@@ -48,10 +48,10 @@ public class RedisServiceImpl implements RedisService {
             return new RedisData(key, type, ttl, value, null);
         } else if (KeyTypeEnum.HASH.equals(keyTypeEnum)) {
             Long ttl = redisDao.ttl(connectionProperties, key);
-            Map<String, String> value = redisDao.hgetAll(connectionProperties, key);
-            return new RedisData(key, type, ttl, null, value);
+            Map<String, String> hashValue = redisDao.hgetAll(connectionProperties, key);
+            return new RedisData(key, type, ttl, null, hashValue);
         } else {
-            return new RedisData();
+            return new RedisData(key, type, null, null, null);
         }
 
     }
