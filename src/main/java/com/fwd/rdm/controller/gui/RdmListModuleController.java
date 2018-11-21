@@ -2,7 +2,7 @@ package com.fwd.rdm.controller.gui;
 
 import com.fwd.rdm.data.RdmCenterObservableData;
 import com.fwd.rdm.data.domain.ConnectionProperties;
-import com.fwd.rdm.data.domain.HashData;
+import com.fwd.rdm.data.domain.ListData;
 import com.fwd.rdm.data.domain.RedisData;
 import com.fwd.rdm.data.domain.RedisObservableData;
 import com.fwd.rdm.enums.KeyTypeEnum;
@@ -10,7 +10,7 @@ import com.fwd.rdm.enums.ViewTypeEnum;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
-import com.fwd.rdm.views.main.RdmAddHashView;
+import com.fwd.rdm.views.main.RdmAddListView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -25,15 +25,14 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @Author: fanwd
  * @Description:
- * @Date: Create in 9:56 2018/11/21
+ * @Date: Create in 14:56 2018/11/21
  */
 @FXMLController
-public class RdmHashModuleController {
+public class RdmListModuleController {
 
     /**
      * 根容器
@@ -69,7 +68,7 @@ public class RdmHashModuleController {
      * HASH数据显示box
      */
     @FXML
-    public HBox hashTableBox;
+    public HBox dataTableBox;
 
     /**
      * 拖拽条
@@ -78,29 +77,19 @@ public class RdmHashModuleController {
     public Separator dragLine;
 
     /**
-     * Hash数据列表
+     * 数据列表
      */
     @FXML
-    public TableView<HashData> hashTableView;
-    /**
-     * Hash数据field显示
-     */
-    @FXML
-    public VBox hashFieldBox;
-    /**
-     * Hash数据field
-     */
-    @FXML
-    public TextArea fieldTextArea;
+    public TableView<ListData> dataTableView;
+
+    @Autowired
+    private RdmAddListView rdmAddListView;
 
     @Autowired
     private RedisService redisService;
 
     @Autowired
     private LoggerUtils loggerUtils;
-
-    @Autowired
-    private RdmAddHashView rdmAddHashView;
 
     @Autowired
     private RdmCenterObservableData rdmCenterObservableData;
@@ -110,7 +99,7 @@ public class RdmHashModuleController {
     /**
      * hashTableData
      */
-    private ObservableList<HashData> tableHashDataList = FXCollections.observableArrayList();
+    private ObservableList<ListData> tableDataList = FXCollections.observableArrayList();
 
     /**
      * 列表序号开始数字
@@ -135,32 +124,31 @@ public class RdmHashModuleController {
             }
         });
 
-        // HASH类型数据初始化--开始
-        fieldTextArea.textProperty().bind(redisObservableData.fieldProperty());
-        redisObservableData.getHashDataList().addListener((ListChangeListener<HashData>) c -> {
+        // 数据初始化--开始
+        redisObservableData.getListDataList().addListener((ListChangeListener<ListData>) c -> {
             if (c.next()) {
-                ObservableList<? extends HashData> allList = c.getList();
-                tableHashDataList.clear();
-                tableHashDataList.addAll(allList);
+                ObservableList<? extends ListData> allList = c.getList();
+                tableDataList.clear();
+                tableDataList.addAll(allList);
             }
         });
-        hashTableView.setItems(tableHashDataList);
-        // 选中时显示field和value
-        hashTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<HashData>) c -> {
+        dataTableView.setItems(tableDataList);
+        // 选中时显示value
+        dataTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ListData>) c -> {
             if (c.next()) {
-                List<? extends HashData> selectedData = c.getAddedSubList();
+                List<? extends ListData> selectedData = c.getAddedSubList();
                 if (!selectedData.isEmpty()) {
-                    HashData hashData = selectedData.get(0);
-                    redisObservableData.setField(hashData.getField());
-                    redisObservableData.setValue(hashData.getValue());
+                    ListData data = selectedData.get(0);
+                    redisObservableData.setValue(data.getValue());
+                    redisObservableData.setIndex(data.getIndex());
                 }
             }
         });
         // 监听刷新数据
-        rdmCenterObservableData.updateHashEvent().addListener((observable, oldValue, newValue) -> {
+        rdmCenterObservableData.updateListEvent().addListener((observable, oldValue, newValue) -> {
             this.initData();
         });
-        // HASH类型数据初始化--结束
+        // 数据初始化--结束
     }
 
     /**
@@ -172,22 +160,23 @@ public class RdmHashModuleController {
         RedisData redisData = redisService.getRedisDataByKey(currentConnectionProperties, currentKey);
         String type = redisData.getType();
         KeyTypeEnum keyTypeEnum = KeyTypeEnum.typeOf(type);
-        if (KeyTypeEnum.HASH.equals(keyTypeEnum)) {
+        if (KeyTypeEnum.LIST.equals(keyTypeEnum)) {
             redisObservableData.setType(type);
             redisObservableData.setKey(redisData.getKey());
             redisObservableData.setTtl(String.valueOf(redisData.getTtl()));
             redisObservableData.setField(null);
             redisObservableData.setValue(null);
+            redisObservableData.setIndex(-1);
             redisObservableData.setSize(null);
-            Map<String, String> hashData = redisData.getHashData();
-            List<HashData> data = new ArrayList<>();
+            List<String> dataList = redisData.getListData();
+            List<ListData> data = new ArrayList<>();
             long index = BASE_INDEX;
-            for (Map.Entry<String, String> entry : hashData.entrySet()) {
-                HashData item = new HashData(index++, entry.getKey(), entry.getValue());
-                data.add(item);
+            for (String key : dataList) {
+                ListData listData = new ListData(index++, key);
+                data.add(listData);
             }
-            redisObservableData.getHashDataList().clear();
-            redisObservableData.getHashDataList().addAll(data);
+            redisObservableData.getListDataList().clear();
+            redisObservableData.getListDataList().addAll(data);
         }
     }
 
@@ -200,58 +189,56 @@ public class RdmHashModuleController {
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
         String value = valueTextArea.getText();
-        String field = fieldTextArea.getText();
-        if (StringUtils.isEmpty(field)) {
+        long index = redisObservableData.getIndex();
+        if (StringUtils.isEmpty(value) || index == -1) {
             loggerUtils.alertWarn("Field Not Selected");
             return;
         }
         // 保存数据
-        redisService.hset(currentConnectionProperties, currentKey, field, value);
-        this.redisObservableData.setValue(value);
-        // 刷新页面数据
-        ObservableList<HashData> hashDataList = this.redisObservableData.getHashDataList();
-        hashDataList.forEach(hashData -> {
-            if (hashData.getField().equals(field)) {
-                hashData.setValue(value);
-            }
-        });
-        tableHashDataList.clear();
-        tableHashDataList.addAll(hashDataList);
+        if (redisService.lset(currentConnectionProperties, currentKey, redisObservableData.getValue(), value, index)) {
+            // 保存成功刷新页面数据
+            this.redisObservableData.setValue(value);
+            ObservableList<ListData> dataList = this.redisObservableData.getListDataList();
+            dataList.get((int) index).setValue(value);
+            tableDataList.clear();
+            tableDataList.addAll(dataList);
+        }
     }
 
     /**
-     * 添加hash数据
+     * 添加数据
      */
     @FXML
-    public void addHash() {
-        rdmAddHashView.show();
+    public void add() {
+        rdmAddListView.show();
     }
 
     /**
-     * 删除hash数据
+     * 删除数据
      */
     @FXML
-    public void deleteHash() {
-        HashData selectedItem = hashTableView.getSelectionModel().getSelectedItem();
+    public void delete() {
+        ListData selectedItem = dataTableView.getSelectionModel().getSelectedItem();
         if (null == selectedItem) {
             loggerUtils.alertWarn("Please select a data!!");
             return;
         }
-        String field = selectedItem.getField();
+        Long selectedIndex = selectedItem.getIndex();
+        String selectedValue = selectedItem.getValue();
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
-        redisService.hdelete(currentConnectionProperties, currentKey, field);
-        ObservableList<HashData> hashDataList = redisObservableData.getHashDataList();
-        redisObservableData.setField(null);
-        redisObservableData.setValue(null);
-        // 删除数据并重新设置行号
-        Iterator<HashData> iterator = hashDataList.iterator();
-        long index = BASE_INDEX;
-        while (iterator.hasNext()) {
-            HashData next = iterator.next();
-            if (next.getField().equals(field)) {
-                iterator.remove();
-            } else {
+
+        if (redisService.ldelete(currentConnectionProperties, currentKey, selectedValue, selectedIndex)) {
+            // 删除成功
+            ObservableList<ListData> dataList = redisObservableData.getListDataList();
+            redisObservableData.setIndex(-1);
+            redisObservableData.setValue(null);
+            // 删除数据并重新设置行号
+            dataList.remove(selectedIndex.intValue());
+            Iterator<ListData> iterator = dataList.iterator();
+            long index = BASE_INDEX;
+            while (iterator.hasNext()) {
+                ListData next = iterator.next();
                 next.setIndex(index++);
             }
         }
@@ -261,7 +248,7 @@ public class RdmHashModuleController {
      * 重新加载
      */
     @FXML
-    public void refreshHash() {
+    public void refresh() {
         this.initData();
     }
 

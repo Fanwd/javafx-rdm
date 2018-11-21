@@ -1,6 +1,8 @@
 package com.fwd.rdm.data.domain;
 
 import com.sun.javafx.collections.ObservableListWrapper;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
@@ -20,7 +22,9 @@ public class RedisObservableData {
     private StringProperty ttl = new SimpleStringProperty();
     private StringProperty size = new SimpleStringProperty();
     private StringProperty field = new SimpleStringProperty();
+    private LongProperty index = new SimpleLongProperty();
     private ObservableList<HashData> hashDataList = new ObservableListWrapper<>(new ArrayList<>());
+    private ObservableList<ListData> listDataList = new ObservableListWrapper<>(new ArrayList<>());
 
     public String getType() {
         return type.get();
@@ -94,11 +98,31 @@ public class RedisObservableData {
         this.field.set(field);
     }
 
+    public long getIndex() {
+        return index.get();
+    }
+
+    public LongProperty indexProperty() {
+        return index;
+    }
+
+    public void setIndex(long index) {
+        this.index.set(index);
+    }
+
     public ObservableList<HashData> getHashDataList() {
         return hashDataList;
     }
 
     public void setHashDataList(ObservableList<HashData> hashDataList) {
         this.hashDataList = hashDataList;
+    }
+
+    public ObservableList<ListData> getListDataList() {
+        return listDataList;
+    }
+
+    public void setListDataList(ObservableList<ListData> listDataList) {
+        this.listDataList = listDataList;
     }
 }

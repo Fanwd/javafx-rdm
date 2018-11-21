@@ -25,9 +25,14 @@ public class RdmCenterObservableData {
     private static final ThreadLocal<String> currentKeyThreadLocal = new ThreadLocal<>();
 
     /**
-     * 刷新数据标志
+     * 刷新hash数据标志
      */
-    private LongProperty updateDateFlag = new SimpleLongProperty(0);
+    private LongProperty updateHashFlag = new SimpleLongProperty(0);
+
+    /**
+     * 刷新list数据标志
+     */
+    private LongProperty updateListFlag = new SimpleLongProperty(0);
 
     public void setCurrentConnectionProperties(ConnectionProperties connectionProperties) {
         // 设置和获取数据时必须是在JavaFX Application线程
@@ -50,13 +55,21 @@ public class RdmCenterObservableData {
         return currentKeyThreadLocal.get();
     }
 
-    public LongProperty updateDateFlagProperty() {
-        return updateDateFlag;
+    public LongProperty updateHashEvent() {
+        return updateHashFlag;
     }
 
-    public void addUpdateDateFlag() {
-        // 修改updateDateFlag触发更新操作
-        long current = this.updateDateFlag.get();
-        this.updateDateFlag.set(current + 1);
+    public void publishUpdateHashEvent() {
+        long current = this.updateHashFlag.get();
+        this.updateHashFlag.set(current + 1);
+    }
+
+    public LongProperty updateListEvent() {
+        return updateListFlag;
+    }
+
+    public void publishUpdateListEvent() {
+        long current = this.updateListFlag.get();
+        this.updateListFlag.set(current + 1);
     }
 }

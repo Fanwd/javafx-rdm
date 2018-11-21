@@ -1,5 +1,6 @@
 package com.fwd.rdm.data.domain;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,16 +16,18 @@ public class RedisData {
     private String value;
 
     private Map<String, String> hashData;
+    private List<String> listData;
 
     public RedisData() {
     }
 
-    public RedisData(String key, String type, Long ttl, String value, Map<String, String> hashData) {
+    public RedisData(String key, String type, Long ttl, String value, Map<String, String> hashData, List<String> listData) {
         this.key = key;
         this.type = type;
         this.ttl = ttl;
         this.value = value;
         this.hashData = hashData;
+        this.listData = listData;
     }
 
     public String getKey() {
@@ -65,5 +68,13 @@ public class RedisData {
 
     public void setHashData(Map<String, String> hashData) {
         this.hashData = hashData;
+    }
+
+    public List<String> getListData() {
+        return listData;
+    }
+
+    public void setListData(List<String> listData) {
+        this.listData = listData;
     }
 }

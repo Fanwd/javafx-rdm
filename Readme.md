@@ -18,9 +18,6 @@ javaFX、spring-boot、lettuce(redis client)、fontawesomefx(图标库)、dom4j(
 
 maven
 
-#### 开发进度
+#### 开发任务
 
-| 特性 | 进度 |
-| ------ | ------ |
-| hash类型 | 完成 |
-| 运行状态监控 ||
+1. 将数据模型改为观察者模式

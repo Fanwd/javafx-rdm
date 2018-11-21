@@ -142,14 +142,6 @@ public class RedisDao {
     }
 
     /**
-     * 保存Hash数据
-     */
-    public boolean hset(ConnectionProperties connectionProperties, String key, String field, String value) {
-        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
-        return redisCommands.hset(key, field, value);
-    }
-
-    /**
      * 删除数据
      */
     public long delete(ConnectionProperties connectionProperties, String... keys) {
@@ -158,11 +150,60 @@ public class RedisDao {
     }
 
     /**
+     * 保存Hash数据
+     */
+    public boolean hset(ConnectionProperties connectionProperties, String key, String field, String value) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.hset(key, field, value);
+    }
+
+    /**
      * 删除Hash数据
      */
     public long hdelete(ConnectionProperties connectionProperties, String key, String field) {
         RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.hdel(key, field);
+    }
+
+    /**
+     * 根据下标范围获取list数据
+     */
+    public List<String> lrange(ConnectionProperties connectionProperties, String key, long startPos, long stopPos) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.lrange(key, startPos, stopPos);
+    }
+
+    /**
+     * 获取下标为index的数据
+     */
+    public String lindex(ConnectionProperties connectionProperties, String key, long index) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.lindex(key, index);
+    }
+
+    /**
+     * 修改下标为index的数据
+     */
+    public boolean lset(ConnectionProperties connectionProperties, String key, String value, long index) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        String result = redisCommands.lset(key, index, value);
+        return RedisReturnCode.OK.equalsIgnoreCase(result);
+    }
+
+    /**
+     * 删除列表中值为value的所有元素
+     */
+    public long lrem(ConnectionProperties connectionProperties, String key, String value) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.lrem(key, 0, value);
+    }
+
+    /**
+     * list头部添加数据
+     */
+    public long lpush(ConnectionProperties connectionProperties, String key, String value) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.lpush(key, value);
     }
 
     /**

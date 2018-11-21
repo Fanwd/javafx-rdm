@@ -34,11 +34,6 @@ public interface RedisService {
     boolean set(ConnectionProperties connectionProperties, String key, String value);
 
     /**
-     * 保存hash数据
-     */
-    boolean hset(ConnectionProperties connectionProperties, String key, String field, String value);
-
-    /**
      * 删除
      */
     long delete(ConnectionProperties connectionProperties, String pattern);
@@ -49,7 +44,27 @@ public interface RedisService {
     long deleteKey(ConnectionProperties connectionProperties, String key);
 
     /**
+     * 保存hash数据
+     */
+    boolean hset(ConnectionProperties connectionProperties, String key, String field, String value);
+
+    /**
      * Hash删除域值
      */
     long hdelete(ConnectionProperties connectionProperties, String key, String field);
+
+    /**
+     * 添加list数据
+     */
+    long lpush(ConnectionProperties connectionProperties, String key, String value);
+
+    /**
+     * 修改
+     */
+    boolean lset(ConnectionProperties connectionProperties, String key, String oldValue, String newValue, long index);
+
+    /**
+     * 删除数据
+     */
+    boolean ldelete(ConnectionProperties connectionProperties, String key, String value, long index);
 }
