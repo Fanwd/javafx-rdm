@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.io.InputStream;
+
 /**
  * @Author: fanwd
  * @Description:
@@ -44,6 +46,14 @@ public class RdmApplication extends AbstractJavaFxApplicationSupport {
     @Override
     public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
         super.beforeInitialView(stage, ctx);
+        // 设置子窗口图标
+        Stage childStage = StageHolder.getChildStage("");
+        String property = ctx.getEnvironment().getProperty("javafx.appicons");
+        InputStream imageStream = this.getClass().getResourceAsStream(property);
+        if (imageStream != null) {
+            Image icon = new Image(imageStream);
+            childStage.getIcons().add(icon);
+        }
     }
 
     /**
