@@ -3,7 +3,6 @@ package com.fwd.rdm.controller.main;
 import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.service.NewConnectionService;
 import de.felixroske.jfxsupport.FXMLController;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -47,7 +46,8 @@ public class RdmNewConnectionFormController {
     /**
      * 测试连接
      */
-    public void testConnection(ActionEvent actionEvent) {
+    @FXML
+    public void testConnection() {
         try {
             ConnectionProperties connectionProperties = new ConnectionProperties();
             connectionProperties.setName(name.getText());
@@ -71,7 +71,8 @@ public class RdmNewConnectionFormController {
     /**
      * 添加连接
      */
-    public void add(ActionEvent actionEvent) {
+    @FXML
+    public void add() {
         ConnectionProperties connectionProperties = new ConnectionProperties();
         connectionProperties.setName(name.getText());
         connectionProperties.setIp(ip.getText());
@@ -83,7 +84,8 @@ public class RdmNewConnectionFormController {
         }
     }
 
-    public void cancel(ActionEvent actionEvent) {
-        System.out.println("cancel");
+    @FXML
+    public void cancel() {
+        ((Stage) rootPane.getScene().getWindow()).close();
     }
 }

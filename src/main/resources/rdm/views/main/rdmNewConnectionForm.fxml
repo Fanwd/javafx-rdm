@@ -29,8 +29,8 @@
                GridPane.rowIndex="4" GridPane.hgrow="ALWAYS" GridPane.rowSpan="3"></Label>
         <HBox GridPane.columnIndex="0" GridPane.rowIndex="7" GridPane.columnSpan="2" spacing="15">
             <Button text="Test Connection" onAction="#testConnection"></Button>
-            <Button text="Add" onAction="#add"></Button>
-            <Button text="Cancel" onAction="#cancel"></Button>
+            <Button text="Add" onAction="#add" prefWidth="80"></Button>
+            <Button text="Cancel" onAction="#cancel" prefWidth="80"></Button>
         </HBox>
     </GridPane>
 </StackPane>
