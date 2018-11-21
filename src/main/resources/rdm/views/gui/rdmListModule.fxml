@@ -77,11 +77,9 @@
         <!--value显示-->
         <StackPane>
             <HBox alignment="CENTER_LEFT">
-                <Label text="Value-size:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                <Label fx:id="valueSizeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <Label text="Value:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
             </HBox>
             <HBox alignment="CENTER_RIGHT">
-                <Label text="View as:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                 <ChoiceBox value="Text" fx:id="viewType" GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <items>
                         <FXCollections fx:factory="observableArrayList">

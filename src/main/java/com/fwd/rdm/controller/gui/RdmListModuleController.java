@@ -8,6 +8,7 @@ import com.fwd.rdm.data.domain.RedisObservableData;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.enums.ViewTypeEnum;
 import com.fwd.rdm.service.RedisService;
+import com.fwd.rdm.utils.DragUtils;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
 import com.fwd.rdm.views.main.RdmAddListView;
@@ -77,6 +78,12 @@ public class RdmListModuleController {
     public Separator dragLine;
 
     /**
+     * 值显示区域
+     */
+    @FXML
+    private VBox valueBox;
+
+    /**
      * 数据列表
      */
     @FXML
@@ -108,6 +115,9 @@ public class RdmListModuleController {
 
     @FXML
     public void initialize() {
+
+        // 垂直拖拽
+        DragUtils.vResizeDrag(dataTableBox, dragLine, valueBox);
 
         // 数据绑定
         keyTextField.textProperty().bind(redisObservableData.keyProperty());

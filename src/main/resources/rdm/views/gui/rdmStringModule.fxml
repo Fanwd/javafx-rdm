@@ -15,7 +15,7 @@
             <ColumnConstraints halignment="RIGHT"/>
             <ColumnConstraints halignment="LEFT"/>
         </columnConstraints>
-        <Label text="hash" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Label text="String:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
         <TextField fx:id="keyTextField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"
                    GridPane.hgrow="ALWAYS"/>
         <Label text="TTL:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>

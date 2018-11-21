@@ -8,6 +8,7 @@ import com.fwd.rdm.data.domain.RedisObservableData;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.enums.ViewTypeEnum;
 import com.fwd.rdm.service.RedisService;
+import com.fwd.rdm.utils.DragUtils;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
 import com.fwd.rdm.views.main.RdmAddHashView;
@@ -69,7 +70,7 @@ public class RdmHashModuleController {
      * HASH数据显示box
      */
     @FXML
-    public HBox hashTableBox;
+    public HBox dataTableBox;
 
     /**
      * 拖拽条
@@ -78,15 +79,21 @@ public class RdmHashModuleController {
     public Separator dragLine;
 
     /**
+     * 值显示
+     */
+    @FXML
+    private VBox valueBox;
+
+    /**
      * Hash数据列表
      */
     @FXML
-    public TableView<HashData> hashTableView;
+    public TableView<HashData> dataTableView;
     /**
      * Hash数据field显示
      */
     @FXML
-    public VBox hashFieldBox;
+    public VBox dataFieldBox;
     /**
      * Hash数据field
      */
@@ -120,6 +127,8 @@ public class RdmHashModuleController {
     @FXML
     public void initialize() {
 
+        // 垂直拖拽窗口大小
+        DragUtils.vResizeDrag(dataTableBox, dragLine, valueBox);
         // 数据绑定
         keyTextField.textProperty().bind(redisObservableData.keyProperty());
         ttlLabel.textProperty().bind(redisObservableData.ttlProperty());
@@ -144,9 +153,9 @@ public class RdmHashModuleController {
                 tableHashDataList.addAll(allList);
             }
         });
-        hashTableView.setItems(tableHashDataList);
+        dataTableView.setItems(tableHashDataList);
         // 选中时显示field和value
-        hashTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<HashData>) c -> {
+        dataTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<HashData>) c -> {
             if (c.next()) {
                 List<? extends HashData> selectedData = c.getAddedSubList();
                 if (!selectedData.isEmpty()) {
@@ -223,7 +232,7 @@ public class RdmHashModuleController {
      * 添加hash数据
      */
     @FXML
-    public void addHash() {
+    public void add() {
         rdmAddHashView.show();
     }
 
@@ -231,8 +240,8 @@ public class RdmHashModuleController {
      * 删除hash数据
      */
     @FXML
-    public void deleteHash() {
-        HashData selectedItem = hashTableView.getSelectionModel().getSelectedItem();
+    public void delete() {
+        HashData selectedItem = dataTableView.getSelectionModel().getSelectedItem();
         if (null == selectedItem) {
             loggerUtils.alertWarn("Please select a data!!");
             return;
@@ -261,7 +270,7 @@ public class RdmHashModuleController {
      * 重新加载
      */
     @FXML
-    public void refreshHash() {
+    public void refresh() {
         this.initData();
     }
 

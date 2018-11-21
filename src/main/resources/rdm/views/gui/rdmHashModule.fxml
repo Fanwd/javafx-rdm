@@ -23,9 +23,9 @@
         <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
     </GridPane>
     <Separator orientation="HORIZONTAL"></Separator>
-    <HBox fx:id="hashTableBox" visible="true" managed="true" spacing="5">
+    <HBox fx:id="dataTableBox" visible="true" managed="true" spacing="5">
         <!--hash数据列表-->
-        <TableView fx:id="hashTableView" prefHeight="250" HBox.hgrow="ALWAYS">
+        <TableView fx:id="dataTableView" HBox.hgrow="ALWAYS">
             <maxHeight>
                 <Double fx:constant="MAX_VALUE"/>
             </maxHeight>
@@ -51,7 +51,7 @@
             </columns>
         </TableView>
         <VBox prefWidth="100" alignment="TOP_CENTER" spacing="5">
-            <Button text="Add" onAction="#addHash">
+            <Button text="Add" onAction="#add">
                 <maxWidth>
                     <Double fx:constant="MAX_VALUE"></Double>
                 </maxWidth>
@@ -59,7 +59,7 @@
                     <FontAwesomeIconView fill="green" glyphName="PLUS_CIRCLE"></FontAwesomeIconView>
                 </graphic>
             </Button>
-            <Button text="Delete" onAction="#deleteHash">
+            <Button text="Delete" onAction="#delete">
                 <maxWidth>
                     <Double fx:constant="MAX_VALUE"></Double>
                 </maxWidth>
@@ -67,7 +67,7 @@
                     <FontAwesomeIconView fill="red" glyphName="TRASH"></FontAwesomeIconView>
                 </graphic>
             </Button>
-            <Button text="Refresh" onAction="#refreshHash">
+            <Button text="Refresh" onAction="#refresh">
                 <maxWidth>
                     <Double fx:constant="MAX_VALUE"></Double>
                 </maxWidth>
@@ -79,18 +79,16 @@
     </HBox>
     <Separator fx:id="dragLine" orientation="HORIZONTAL"></Separator>
     <VBox fx:id="valueBox" spacing="5" VBox.vgrow="ALWAYS">
-        <VBox fx:id="hashFieldBox" spacing="5">
+        <VBox fx:id="dataFieldBox" spacing="5">
             <Label text="Field:"></Label>
             <TextArea fx:id="fieldTextArea" editable="false" wrapText="true"></TextArea>
         </VBox>
         <!--value显示-->
         <StackPane>
             <HBox alignment="CENTER_LEFT">
-                <Label text="Value-size:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-                <Label fx:id="valueSizeLabel" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                <Label text="Value:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
             </HBox>
             <HBox alignment="CENTER_RIGHT">
-                <Label text="View as:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
                 <ChoiceBox value="Text" fx:id="viewType" GridPane.columnIndex="1" GridPane.rowIndex="3">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
