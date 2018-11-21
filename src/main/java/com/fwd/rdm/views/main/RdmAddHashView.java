@@ -21,7 +21,7 @@ public class RdmAddHashView extends AbstractFxmlView {
         if (null == scene) {
             scene = new Scene(this.getView());
         }
-        Stage childStage = StageHolder.getChildStage();
+        Stage childStage = StageHolder.getChildStage("Add Hash Data");
         childStage.setScene(scene);
         childStage.show();
     }

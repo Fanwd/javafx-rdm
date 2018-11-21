@@ -8,6 +8,8 @@ import com.fwd.rdm.utils.LoggerUtils;
 import com.fwd.rdm.views.gui.RdmLeftMenuView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.StackPane;
@@ -30,6 +32,10 @@ public class RdmAddController {
     @FXML
     private ChoiceBox<String> typeChoiceBox;
     @FXML
+    private Label scoreLabel;
+    @FXML
+    private TextField scoreTextField;
+    @FXML
     private Label fieldLabel;
     @FXML
     private TextArea fieldTextArea;
@@ -49,22 +55,33 @@ public class RdmAddController {
 
     @FXML
     public void initialize() {
-        // 数据类型为HASH时显示field，否则隐藏field
+        // hash数据组件可见性设置
         // 设置可见性
-        fieldLabel.visibleProperty().bind(Bindings.when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.HASH.getType()))
-                .then(true).otherwise(false));
-        fieldTextArea.visibleProperty().bind(Bindings.when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.HASH.getType()))
-                .then(true).otherwise(false));
+        StringProperty str = new SimpleStringProperty();
+        fieldLabel.visibleProperty().bind(Bindings
+                .when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.HASH.getType())).then(true)
+                .otherwise(false));
+        fieldTextArea.visibleProperty().bind(fieldLabel.visibleProperty());
         // 设置隐藏性
+        fieldLabel.managedProperty().bind(fieldLabel.visibleProperty());
+        fieldTextArea.managedProperty().bind(fieldLabel.visibleProperty());
 
-        fieldTextArea.managedProperty().bind(Bindings.when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.HASH.getType()))
-                .then(true).otherwise(false));
+        // zset组件可见性设置
+        scoreLabel.visibleProperty().bind(Bindings
+                .when(typeChoiceBox.valueProperty().isEqualTo(KeyTypeEnum.ZSET.getType())).then(true)
+                .otherwise(false));
+        scoreLabel.managedProperty().bind(scoreLabel.visibleProperty());
+        scoreTextField.visibleProperty().bind(scoreLabel.visibleProperty());
+        scoreTextField.managedProperty().bind(scoreLabel.visibleProperty());
     }
 
     public void setTreeItem(TreeItem<ConnectionTreeCell.TreeItemData> treeItem) {
         this.treeItem = treeItem;
     }
 
+    /**
+     * 添加数据
+     */
     @FXML
     public void add() {
         String key = keyTextField.getText();
@@ -81,6 +98,7 @@ public class RdmAddController {
             loggerUtils.alertError("value is null!!");
             return;
         }
+
         if (KeyTypeEnum.STRING.equals(itemTypeEnum)) {
             // 添加string类型数据
             if (redisService.set(connectionProperties, key, value)) {
@@ -94,6 +112,12 @@ public class RdmAddController {
                 return;
             }
             if (redisService.hset(connectionProperties, key, field, value)) {
+                rdmLeftMenuView.refreshCell(treeItem);
+                this.close();
+            }
+        } else if (KeyTypeEnum.LIST.equals(itemTypeEnum)) {
+            // 添加list类型数据
+            if (redisService.lpush(connectionProperties, key, value) > 0) {
                 rdmLeftMenuView.refreshCell(treeItem);
                 this.close();
             }

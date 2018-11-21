@@ -25,7 +25,7 @@ public class RdmAddView extends AbstractFxmlView {
 
     public void show(TreeItem<ConnectionTreeCell.TreeItemData> treeItem) {
         rdmAddController.setTreeItem(treeItem);
-        Stage childStage = StageHolder.getChildStage();
+        Stage childStage = StageHolder.getChildStage("Add Data");
         Scene scene = this.getView().getScene();
         if (null == scene) {
             scene = new Scene(this.getView());

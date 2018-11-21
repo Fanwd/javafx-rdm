@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -65,7 +66,8 @@ public class RdmMainController {
         if (scene == null) {
             scene = new Scene(rdmNewConnectionFormView.getView());
         }
-        StageHolder.getChildStage().setScene(scene);
-        StageHolder.getChildStage().show();
+        Stage childStage = StageHolder.getChildStage("New Connection");
+        childStage.setScene(scene);
+        childStage.show();
     }
 }

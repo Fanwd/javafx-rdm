@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import java.lang.String?>
+<?import java.lang.*?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:id="rootStackPane"
@@ -15,21 +15,32 @@
         <padding>
             <Insets top="20" bottom="20" left="20" right="20"></Insets>
         </padding>
+        <!--key-->
         <Label text="Key:"></Label>
         <TextField fx:id="keyTextField"></TextField>
+        <!--data type-->
         <Label text="Type:"></Label>
         <ChoiceBox fx:id="typeChoiceBox" value="string">
             <items>
                 <FXCollections fx:factory="observableArrayList">
                     <String fx:value="string"></String>
                     <String fx:value="hash"></String>
+                    <String fx:value="list"/>
+                    <String fx:value="set"/>
+                    <String fx:value="zset"/>
                 </FXCollections>
             </items>
         </ChoiceBox>
+        <!--zset-score-->
+        <Label fx:id="scoreLabel" text="Score:"/>
+        <TextField fx:id="scoreTextField"/>
+        <!--hash-field-->
         <Label fx:id="fieldLabel" text="Field:"></Label>
         <TextArea fx:id="fieldTextArea"></TextArea>
+        <!--value-->
         <Label text="Value:"></Label>
         <TextArea fx:id="valueTextArea" VBox.vgrow="ALWAYS"></TextArea>
+        <!--button-->
         <HBox alignment="CENTER" spacing="30">
             <Button text="Add" onAction="#add"></Button>
             <Button text="Cancle" onAction="#cancle"/>

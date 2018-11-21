@@ -20,7 +20,8 @@ public class StageHolder {
         StageHolder.mainStage = mainStage;
     }
 
-    public static Stage getChildStage() {
+    public static Stage getChildStage(String title) {
+        childStage.setTitle(title);
         return childStage;
     }
 

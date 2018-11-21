@@ -4,9 +4,11 @@ import com.fwd.rdm.utils.StageHolder;
 import com.fwd.rdm.views.main.RdmMainView;
 import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
 import de.felixroske.jfxsupport.SplashScreen;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @Author: fanwd
@@ -25,7 +27,7 @@ public class RdmApplication extends AbstractJavaFxApplicationSupport {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setMinWidth(500);
         primaryStage.setMinHeight(400);
-        primaryStage.setTitle("Tools");
+        primaryStage.setTitle("JavaFX Redis Client");
 
         Stage childStage = new Stage();
         // 弹出窗口时父窗口不可操作
@@ -37,6 +39,11 @@ public class RdmApplication extends AbstractJavaFxApplicationSupport {
         StageHolder.setChildStage(childStage);
 
         super.start(primaryStage);
+    }
+
+    @Override
+    public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
+        super.beforeInitialView(stage, ctx);
     }
 
     /**

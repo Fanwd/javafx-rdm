@@ -21,7 +21,7 @@ public class RdmAddListView extends AbstractFxmlView {
         if (null == scene) {
             scene = new Scene(this.getView());
         }
-        Stage childStage = StageHolder.getChildStage();
+        Stage childStage = StageHolder.getChildStage("Add List");
         childStage.setScene(scene);
         childStage.show();
     }
