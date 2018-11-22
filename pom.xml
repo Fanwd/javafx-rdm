@@ -61,6 +61,7 @@
                 <version>8.8.3</version>
                 <configuration>
                     <vendor>fanwd</vendor>
+                    <appName>JavaFX-rdm</appName>
                     <mainClass>com.fwd.rdm.RdmApplication</mainClass>
                 </configuration>
             </plugin>
