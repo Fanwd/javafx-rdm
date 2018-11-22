@@ -10,8 +10,8 @@ import de.felixroske.jfxsupport.FXMLView;
  * @Date: Create in 14:50 2018/11/21
  */
 @FXMLController
-@FXMLView("/rdm/views/gui/rdmZSetModule.fxml")
-public class RdmZSetModuleView extends AbstractModuleView {
+@FXMLView("/rdm/views/gui/rdmZsetModule.fxml")
+public class RdmZsetModuleView extends AbstractModuleView {
 
     @Override
     public boolean isSupport(String type) {

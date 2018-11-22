@@ -4,6 +4,7 @@ import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.uicomponents.ConnectionTreeCell;
+import com.fwd.rdm.uicomponents.DoubleTextField;
 import com.fwd.rdm.utils.LoggerUtils;
 import com.fwd.rdm.views.gui.RdmLeftMenuView;
 import de.felixroske.jfxsupport.FXMLController;
@@ -34,7 +35,7 @@ public class RdmAddController {
     @FXML
     private Label scoreLabel;
     @FXML
-    private TextField scoreTextField;
+    private DoubleTextField scoreTextField;
     @FXML
     private Label fieldLabel;
     @FXML
@@ -91,11 +92,11 @@ public class RdmAddController {
         KeyTypeEnum itemTypeEnum = KeyTypeEnum.typeOf(type);
         ConnectionProperties connectionProperties = treeItem.getValue().getConnectionPropertiesObjectProperty();
         if (StringUtils.isEmpty(key)) {
-            loggerUtils.alertError("key is null!");
+            loggerUtils.alertError("Key should not be empty!!");
             return;
         }
         if (StringUtils.isEmpty(value)) {
-            loggerUtils.alertError("value is null!!");
+            loggerUtils.alertError("Value should not be empty!!");
             return;
         }
 
@@ -108,7 +109,7 @@ public class RdmAddController {
         } else if (KeyTypeEnum.HASH.equals(itemTypeEnum)) {
             // 添加hash类型数据
             if (StringUtils.isEmpty(field)) {
-                loggerUtils.alertError("fieldId is null!!");
+                loggerUtils.alertError("Field should not be empty!!");
                 return;
             }
             if (redisService.hset(connectionProperties, key, field, value)) {
@@ -118,6 +119,21 @@ public class RdmAddController {
         } else if (KeyTypeEnum.LIST.equals(itemTypeEnum)) {
             // 添加list类型数据
             if (redisService.ladd(connectionProperties, key, value) > 0) {
+                rdmLeftMenuView.refreshCell(treeItem);
+                this.close();
+            }
+        } else if (KeyTypeEnum.SET.equals(itemTypeEnum)) {
+            if (redisService.sadd(connectionProperties, key, value) > 0) {
+                rdmLeftMenuView.refreshCell(treeItem);
+                this.close();
+            }
+        } else if (KeyTypeEnum.ZSET.equals(itemTypeEnum)) {
+            String score = scoreTextField.getText();
+            if (StringUtils.isEmpty(score)) {
+                loggerUtils.alertError("Score should not be empty!!");
+                return;
+            }
+            if (redisService.zadd(connectionProperties, key, Double.valueOf(score), value) > 0) {
                 rdmLeftMenuView.refreshCell(treeItem);
                 this.close();
             }

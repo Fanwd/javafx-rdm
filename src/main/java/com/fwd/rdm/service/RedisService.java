@@ -88,4 +88,19 @@ public interface RedisService {
      * set修改数据
      */
     long smodify(ConnectionProperties connectionProperties, String key, String oldValue, String newValue);
+
+    /**
+     * zset添加数据
+     */
+    long zadd(ConnectionProperties connectionProperties, String key, double score, String value);
+
+    /**
+     * zset删除数据
+     */
+    long zdel(ConnectionProperties connectionProperties, String key, String value);
+
+    /**
+     * zset修改数据
+     */
+    long zmodify(ConnectionProperties connectionProperties, String key, String oldValue, double oldScore, String newValue);
 }

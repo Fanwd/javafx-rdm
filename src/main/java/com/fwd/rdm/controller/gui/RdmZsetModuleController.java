@@ -1,15 +1,20 @@
 package com.fwd.rdm.controller.gui;
 
 import com.fwd.rdm.data.RdmCenterObservableData;
-import com.fwd.rdm.data.domain.*;
+import com.fwd.rdm.data.domain.ConnectionProperties;
+import com.fwd.rdm.data.domain.RedisData;
+import com.fwd.rdm.data.domain.RedisObservableData;
+import com.fwd.rdm.data.domain.ZsetData;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.enums.ViewTypeEnum;
 import com.fwd.rdm.service.RedisService;
+import com.fwd.rdm.uicomponents.DoubleTextField;
 import com.fwd.rdm.utils.DragUtils;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
-import com.fwd.rdm.views.main.RdmAddSetView;
+import com.fwd.rdm.views.main.RdmAddZsetView;
 import de.felixroske.jfxsupport.FXMLController;
+import io.lettuce.core.ScoredValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,7 +28,6 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @Author: fanwd
@@ -31,7 +35,7 @@ import java.util.Set;
  * @Date: Create in 14:56 2018/11/21
  */
 @FXMLController
-public class RdmSetModuleController {
+public class RdmZsetModuleController {
 
     /**
      * 根容器
@@ -56,6 +60,12 @@ public class RdmSetModuleController {
      */
     @FXML
     private ChoiceBox<String> viewType;
+
+    /**
+     * 分数
+     */
+    @FXML
+    private DoubleTextField scoreTextField;
 
     /**
      * value
@@ -85,10 +95,10 @@ public class RdmSetModuleController {
      * 数据列表
      */
     @FXML
-    public TableView<SetData> dataTableView;
+    public TableView<ZsetData> dataTableView;
 
     @Autowired
-    private RdmAddSetView rdmAddSetView;
+    private RdmAddZsetView rdmAddZsetView;
 
     @Autowired
     private RedisService redisService;
@@ -104,7 +114,7 @@ public class RdmSetModuleController {
     /**
      * TableData
      */
-    private ObservableList<SetData> tableDataList = FXCollections.observableArrayList();
+    private ObservableList<ZsetData> tableDataList = FXCollections.observableArrayList();
 
     /**
      * 列表序号开始数字
@@ -131,32 +141,38 @@ public class RdmSetModuleController {
                 this.initData();
             }
         });
+        redisObservableData.scoreProperty().addListener((observable, oldValue, newValue) -> {
+            scoreTextField.setText(newValue);
+        });
 
         // 数据初始化--开始
-        redisObservableData.getSetDataList().addListener((ListChangeListener<SetData>) c -> {
+        redisObservableData.getZsetDataList().addListener((ListChangeListener<ZsetData>) c -> {
             if (c.next()) {
-                ObservableList<? extends SetData> allList = c.getList();
+                ObservableList<? extends ZsetData> allList = c.getList();
                 tableDataList.clear();
                 tableDataList.addAll(allList);
             }
         });
         dataTableView.setItems(tableDataList);
         // 选中时显示value
-        dataTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<SetData>) c -> {
+        dataTableView.getSelectionModel().getSelectedItems().addListener((ListChangeListener<ZsetData>) c -> {
             if (c.next()) {
-                List<? extends SetData> selectedData = c.getAddedSubList();
+                List<? extends ZsetData> selectedData = c.getAddedSubList();
                 if (!selectedData.isEmpty()) {
-                    SetData data = selectedData.get(0);
+                    ZsetData data = selectedData.get(0);
                     redisObservableData.setValue(data.getValue());
                     redisObservableData.setIndex(data.getIndex());
+                    redisObservableData.setScore(String.valueOf(data.getScore()));
                 }
             }
         });
         // 监听刷新数据
-        rdmCenterObservableData.updateSetEvent().addListener((observable, oldValue, newValue) -> {
+        rdmCenterObservableData.updateZsetEvent().addListener((observable, oldValue, newValue) -> {
             this.initData();
         });
         // 数据初始化--结束
+
+
     }
 
     /**
@@ -168,7 +184,7 @@ public class RdmSetModuleController {
         RedisData redisData = redisService.getRedisDataByKey(currentConnectionProperties, currentKey);
         String type = redisData.getType();
         KeyTypeEnum keyTypeEnum = KeyTypeEnum.typeOf(type);
-        if (KeyTypeEnum.SET.equals(keyTypeEnum)) {
+        if (KeyTypeEnum.ZSET.equals(keyTypeEnum)) {
             redisObservableData.setType(type);
             redisObservableData.setKey(redisData.getKey());
             redisObservableData.setTtl(String.valueOf(redisData.getTtl()));
@@ -176,15 +192,16 @@ public class RdmSetModuleController {
             redisObservableData.setValue(null);
             redisObservableData.setIndex(-1);
             redisObservableData.setSize(null);
-            Set<String> dataList = redisData.getSetData();
-            List<SetData> data = new ArrayList<>();
+            redisObservableData.setScore(null);
+            List<ScoredValue<String>> dataList = redisData.getZsetData();
+            List<ZsetData> data = new ArrayList<>();
             long index = BASE_INDEX;
-            for (String key : dataList) {
-                SetData dataItem = new SetData(index++, key);
+            for (ScoredValue<String> key : dataList) {
+                ZsetData dataItem = new ZsetData(index++, key.getValue(), key.getScore());
                 data.add(dataItem);
             }
-            redisObservableData.getSetDataList().clear();
-            redisObservableData.getSetDataList().addAll(data);
+            redisObservableData.getZsetDataList().clear();
+            redisObservableData.getZsetDataList().addAll(data);
         }
     }
 
@@ -197,18 +214,29 @@ public class RdmSetModuleController {
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
         String value = valueTextArea.getText();
+        String score = scoreTextField.getText();
         long index = redisObservableData.getIndex();
         if (StringUtils.isEmpty(value) || index == -1) {
             loggerUtils.alertWarn("Field Not Selected");
             return;
         }
+        if (StringUtils.isEmpty(score)) {
+            loggerUtils.alertWarn("Score is Empty!!");
+            return;
+        }
+        if (StringUtils.isEmpty(value)) {
+            loggerUtils.alertWarn("Value is Empty!!");
+        }
+        Double doubleScore = Double.valueOf(score);
         // 保存数据
 
-        if (redisService.smodify(currentConnectionProperties, currentKey, redisObservableData.getValue(), value) > 0) {
+        if (redisService.zmodify(currentConnectionProperties, currentKey, redisObservableData.getValue(), doubleScore, value) > 0) {
             // 保存成功刷新页面数据
             this.redisObservableData.setValue(value);
-            ObservableList<SetData> dataList = this.redisObservableData.getSetDataList();
+            this.redisObservableData.setScore(score);
+            ObservableList<ZsetData> dataList = this.redisObservableData.getZsetDataList();
             dataList.get((int) index).setValue(value);
+            dataList.get((int) index).setScore(doubleScore);
             tableDataList.clear();
             tableDataList.addAll(dataList);
         }
@@ -219,7 +247,7 @@ public class RdmSetModuleController {
      */
     @FXML
     public void add() {
-        rdmAddSetView.show();
+        rdmAddZsetView.show();
     }
 
     /**
@@ -227,7 +255,7 @@ public class RdmSetModuleController {
      */
     @FXML
     public void delete() {
-        SetData selectedItem = dataTableView.getSelectionModel().getSelectedItem();
+        ZsetData selectedItem = dataTableView.getSelectionModel().getSelectedItem();
         if (null == selectedItem) {
             loggerUtils.alertWarn("Please select a data!!");
             return;
@@ -237,17 +265,17 @@ public class RdmSetModuleController {
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
 
-        if (redisService.sdel(currentConnectionProperties, currentKey, selectedValue) >= 0) {
+        if (redisService.zdel(currentConnectionProperties, currentKey, selectedValue) >= 0) {
             // 删除成功
-            ObservableList<SetData> dataList = redisObservableData.getSetDataList();
+            ObservableList<ZsetData> dataList = redisObservableData.getZsetDataList();
             redisObservableData.setIndex(-1);
             redisObservableData.setValue(null);
             // 删除数据并重新设置行号
             dataList.remove(selectedIndex.intValue());
-            Iterator<SetData> iterator = dataList.iterator();
+            Iterator<ZsetData> iterator = dataList.iterator();
             long index = BASE_INDEX;
             while (iterator.hasNext()) {
-                SetData next = iterator.next();
+                ZsetData next = iterator.next();
                 next.setIndex(index++);
             }
         }

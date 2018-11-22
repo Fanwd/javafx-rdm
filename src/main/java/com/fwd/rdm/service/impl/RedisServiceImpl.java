@@ -6,6 +6,7 @@ import com.fwd.rdm.data.domain.RedisData;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.utils.LoggerUtils;
+import io.lettuce.core.ScoredValue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,18 +52,21 @@ public class RedisServiceImpl implements RedisService {
         Long ttl = redisDao.ttl(connectionProperties, key);
         if (KeyTypeEnum.STRING.equals(keyTypeEnum)) {
             String value = redisDao.get(connectionProperties, key);
-            return new RedisData(key, type, ttl, value, null, null);
+            return new RedisData(key, type, ttl, value);
         } else if (KeyTypeEnum.HASH.equals(keyTypeEnum)) {
             Map<String, String> hashValue = redisDao.hgetAll(connectionProperties, key);
-            return new RedisData(key, type, ttl, null, hashValue, null);
+            return new RedisData(key, type, ttl, hashValue);
         } else if (KeyTypeEnum.LIST.equals(keyTypeEnum)) {
             List<String> listData = redisDao.lrange(connectionProperties, key, 0, -1);
-            return new RedisData(key, type, ttl, null, null, listData);
+            return new RedisData(key, type, ttl, null, listData);
         } else if (KeyTypeEnum.SET.equals(keyTypeEnum)) {
             Set<String> setData = redisDao.smembers(connectionProperties, key);
             return new RedisData(key, type, ttl, setData);
+        } else if (KeyTypeEnum.ZSET.equals(keyTypeEnum)) {
+            List<ScoredValue<String>> zsetData = redisDao.zrange(connectionProperties, key, 0, -1);
+            return new RedisData(key, type, ttl, zsetData);
         } else {
-            return new RedisData(key, type, null, null, null, null);
+            return new RedisData(key, type, ttl);
         }
 
     }
@@ -154,6 +158,23 @@ public class RedisServiceImpl implements RedisService {
         redisDao.srem(connectionProperties, key, oldValue);
         // 添加新数据
         return redisDao.sadd(connectionProperties, key, newValue);
+    }
+
+    @Override
+    public long zadd(ConnectionProperties connectionProperties, String key, double score, String value) {
+        return redisDao.zadd(connectionProperties, key, score, value);
+    }
+
+    @Override
+    public long zdel(ConnectionProperties connectionProperties, String key, String value) {
+        return redisDao.zrem(connectionProperties, key, value);
+    }
+
+    @Override
+    public long zmodify(ConnectionProperties connectionProperties, String key, String oldValue, double oldScore, String newValue) {
+        // 删除数据
+        redisDao.zrem(connectionProperties, key, oldValue);
+        return redisDao.zadd(connectionProperties, key, oldScore, newValue);
     }
 
 }

@@ -39,6 +39,11 @@ public class RdmCenterObservableData {
      */
     private LongProperty updateSetFlag = new SimpleLongProperty(0);
 
+    /**
+     * 刷新zset数据标志
+     */
+    private LongProperty updateZsetFlag = new SimpleLongProperty(0);
+
     public void setCurrentConnectionProperties(ConnectionProperties connectionProperties) {
         // 设置和获取数据时必须是在JavaFX Application线程
         assert Platform.isFxApplicationThread();
@@ -84,5 +89,13 @@ public class RdmCenterObservableData {
 
     public void publishUpdateSetEvent() {
         this.updateSetFlag.set(this.updateSetFlag.get() + 1);
+    }
+
+    public LongProperty updateZsetEvent() {
+        return updateZsetFlag;
+    }
+
+    public void publishUpdateZsetEvent() {
+        this.updateZsetFlag.set(this.updateZsetFlag.get() + 1);
     }
 }

@@ -3,6 +3,7 @@ package com.fwd.rdm.controller.main;
 import com.fwd.rdm.data.RdmCenterObservableData;
 import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.service.RedisService;
+import com.fwd.rdm.uicomponents.DoubleTextField;
 import com.fwd.rdm.utils.LoggerUtils;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
@@ -15,13 +16,19 @@ import org.springframework.util.StringUtils;
 /**
  * @Author: fanwd
  * @Description:
- * @Date: Create in 14:51 2018/11/22
+ * @Date: Create in 16:31 2018/11/22
  */
 @FXMLController
-public class RdmAddSetController {
+public class RdmAddZsetController {
 
     @FXML
     private StackPane rootStackPane;
+
+    /**
+     * 权重
+     */
+    @FXML
+    private DoubleTextField scoreTextField;
 
     @FXML
     private TextArea valueTextArea;
@@ -46,6 +53,11 @@ public class RdmAddSetController {
     @FXML
     public void add() {
         String value = valueTextArea.getText();
+        String scoreStr = scoreTextField.getText();
+        if (StringUtils.isEmpty(scoreStr)) {
+            loggerUtils.warn("Score should not be empty!!");
+            return;
+        }
         if (StringUtils.isEmpty(value)) {
             loggerUtils.warn("Value should not be empty!!");
             return;
@@ -53,7 +65,7 @@ public class RdmAddSetController {
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
         if (redisService.sadd(currentConnectionProperties, currentKey, value) > 0) {
-            rdmCenterObservableData.publishUpdateSetEvent();
+            rdmCenterObservableData.publishUpdateZsetEvent();
             this.close();
         }
     }
@@ -67,6 +79,7 @@ public class RdmAddSetController {
      * 关闭窗口
      */
     private void close() {
+        scoreTextField.setText(null);
         valueTextArea.setText(null);
         Stage currentStage = (Stage) rootStackPane.getScene().getWindow();
         currentStage.close();

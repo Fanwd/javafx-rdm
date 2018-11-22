@@ -4,6 +4,7 @@ import com.fwd.rdm.data.domain.ConnectionProperties;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisCommandExecutionException;
 import io.lettuce.core.RedisURI;
+import io.lettuce.core.ScoredValue;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import org.springframework.stereotype.Component;
@@ -229,6 +230,30 @@ public class RedisDao {
     public long srem(ConnectionProperties connectionProperties, String key, String value) {
         RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.srem(key, value);
+    }
+
+    /**
+     * zset查询数据
+     */
+    public List<ScoredValue<String>> zrange(ConnectionProperties connectionProperties, String key, long startPos, long stopPos) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.zrangeWithScores(key, startPos, stopPos);
+    }
+
+    /**
+     * zset添加数据
+     */
+    public long zadd(ConnectionProperties connectionProperties, String key, double score, String value) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.zadd(key, score, value);
+    }
+
+    /**
+     * zset删除数据
+     */
+    public long zrem(ConnectionProperties connectionProperties, String key, String value) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.zrem(key, value);
     }
 
     /**

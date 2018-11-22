@@ -1,10 +1,7 @@
 package com.fwd.rdm.data.domain;
 
 import com.sun.javafx.collections.ObservableListWrapper;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
@@ -23,8 +20,11 @@ public class RedisObservableData {
     private StringProperty size = new SimpleStringProperty();
     private StringProperty field = new SimpleStringProperty();
     private LongProperty index = new SimpleLongProperty();
+    private StringProperty score = new SimpleStringProperty();
     private ObservableList<HashData> hashDataList = new ObservableListWrapper<>(new ArrayList<>());
     private ObservableList<ListData> listDataList = new ObservableListWrapper<>(new ArrayList<>());
+    private ObservableList<SetData> setDataList = new ObservableListWrapper<>(new ArrayList<>());
+    private ObservableList<ZsetData> zsetDataList = new ObservableListWrapper<>(new ArrayList<>());
 
     public String getType() {
         return type.get();
@@ -110,6 +110,18 @@ public class RedisObservableData {
         this.index.set(index);
     }
 
+    public String getScore() {
+        return score.get();
+    }
+
+    public StringProperty scoreProperty() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score.set(score);
+    }
+
     public ObservableList<HashData> getHashDataList() {
         return hashDataList;
     }
@@ -124,5 +136,21 @@ public class RedisObservableData {
 
     public void setListDataList(ObservableList<ListData> listDataList) {
         this.listDataList = listDataList;
+    }
+
+    public ObservableList<SetData> getSetDataList() {
+        return setDataList;
+    }
+
+    public void setSetDataList(ObservableList<SetData> setDataList) {
+        this.setDataList = setDataList;
+    }
+
+    public ObservableList<ZsetData> getZsetDataList() {
+        return zsetDataList;
+    }
+
+    public void setZsetDataList(ObservableList<ZsetData> zsetDataList) {
+        this.zsetDataList = zsetDataList;
     }
 }

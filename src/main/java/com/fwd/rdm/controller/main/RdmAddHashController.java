@@ -3,12 +3,14 @@ package com.fwd.rdm.controller.main;
 import com.fwd.rdm.data.RdmCenterObservableData;
 import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.service.RedisService;
+import com.fwd.rdm.utils.LoggerUtils;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 /**
  * @Author: fanwd
@@ -33,6 +35,9 @@ public class RdmAddHashController {
     @Autowired
     private RedisService redisService;
 
+    @Autowired
+    private LoggerUtils loggerUtils;
+
     @FXML
     public void initialize() {
 
@@ -45,6 +50,14 @@ public class RdmAddHashController {
     public void add() {
         String field = fieldTextArea.getText();
         String value = valueTextArea.getText();
+        if (StringUtils.isEmpty(field)) {
+            loggerUtils.warn("Field should not be empty!!");
+            return;
+        }
+        if (StringUtils.isEmpty(value)) {
+            loggerUtils.warn("Value should not be empty!!");
+            return;
+        }
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
         if (redisService.hset(currentConnectionProperties, currentKey, field, value)) {
