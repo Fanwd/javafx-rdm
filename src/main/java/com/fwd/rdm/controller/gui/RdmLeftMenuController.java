@@ -107,7 +107,6 @@ public class RdmLeftMenuController {
                     itemData.setRemove(true);
                     ConnectionTreeCell.TreeItemData data = new ConnectionTreeCell.TreeItemData(itemData);
                     treeItem.setValue(data);
-//                    this.refreshCell(treeItem.getParent());
                 } else if (ItemTypeEnum.SERVER.equals(itemData.getItemTypeEnum())) {
                     rdmObservableData.removeConnection(itemData.getConnectionPropertiesObjectProperty());
                 }
@@ -119,6 +118,7 @@ public class RdmLeftMenuController {
                         treeItemAction(cell.getTreeItem());
                     }
                 } catch (RuntimeException re) {
+                    re.printStackTrace();
                     loggerUtils.error(re.toString());
                 }
             });
@@ -273,7 +273,6 @@ public class RdmLeftMenuController {
                     parentProperties.setName("db" + dbIndex + " (" + keyList.size() + ")");
                     item.setConnectionPropertiesObjectProperty(parentProperties);
                     selectedItem.setValue(item);
-//                    cell.setText(parentProperties.getName());
                 }
                 if (!keyList.isEmpty()) {
                     Map<String, Map<String, List<ConnectionTreeCell.TreeData>>> treeMap = this.buildTreeData(keyList);
@@ -304,7 +303,6 @@ public class RdmLeftMenuController {
                         parentProperties.setName(item.getText() + " (" + keyList.size() + ")");
                         item.setConnectionPropertiesObjectProperty(parentProperties);
                         treeItem.setValue(item);
-//                        cell.setText(parentProperties.getName());
                     }
                     if (!keyList.isEmpty()) {
                         Map<String, Map<String, List<ConnectionTreeCell.TreeData>>> treeMap = this.buildTreeData(keyList);

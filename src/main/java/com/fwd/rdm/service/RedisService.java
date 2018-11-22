@@ -5,6 +5,7 @@ import com.fwd.rdm.data.domain.RedisData;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: fanwd
@@ -56,15 +57,35 @@ public interface RedisService {
     /**
      * 添加list数据
      */
-    long lpush(ConnectionProperties connectionProperties, String key, String value);
+    long ladd(ConnectionProperties connectionProperties, String key, String value);
 
     /**
      * 修改
      */
-    boolean lset(ConnectionProperties connectionProperties, String key, String oldValue, String newValue, long index);
+    boolean lmodify(ConnectionProperties connectionProperties, String key, String oldValue, String newValue, long index);
 
     /**
      * 删除数据
      */
-    boolean ldelete(ConnectionProperties connectionProperties, String key, String value, long index);
+    boolean ldel(ConnectionProperties connectionProperties, String key, String value, long index);
+
+    /**
+     * set查询数据
+     */
+    Set<String> sget(ConnectionProperties connectionProperties, String key);
+
+    /**
+     * set添加数据
+     */
+    long sadd(ConnectionProperties connectionProperties, String key, String value);
+
+    /**
+     * set删除数据
+     */
+    long sdel(ConnectionProperties connectionProperties, String key, String val);
+
+    /**
+     * set修改数据
+     */
+    long smodify(ConnectionProperties connectionProperties, String key, String oldValue, String newValue);
 }

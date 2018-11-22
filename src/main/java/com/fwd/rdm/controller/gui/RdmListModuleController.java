@@ -66,7 +66,7 @@ public class RdmListModuleController {
     private TextArea valueTextArea;
 
     /**
-     * HASH数据显示box
+     * 数据显示box
      */
     @FXML
     public HBox dataTableBox;
@@ -104,7 +104,7 @@ public class RdmListModuleController {
     private RedisObservableData redisObservableData = new RedisObservableData();
 
     /**
-     * hashTableData
+     * TableData
      */
     private ObservableList<ListData> tableDataList = FXCollections.observableArrayList();
 
@@ -205,7 +205,7 @@ public class RdmListModuleController {
             return;
         }
         // 保存数据
-        if (redisService.lset(currentConnectionProperties, currentKey, redisObservableData.getValue(), value, index)) {
+        if (redisService.lmodify(currentConnectionProperties, currentKey, redisObservableData.getValue(), value, index)) {
             // 保存成功刷新页面数据
             this.redisObservableData.setValue(value);
             ObservableList<ListData> dataList = this.redisObservableData.getListDataList();
@@ -238,7 +238,7 @@ public class RdmListModuleController {
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
 
-        if (redisService.ldelete(currentConnectionProperties, currentKey, selectedValue, selectedIndex)) {
+        if (redisService.ldel(currentConnectionProperties, currentKey, selectedValue, selectedIndex)) {
             // 删除成功
             ObservableList<ListData> dataList = redisObservableData.getListDataList();
             redisObservableData.setIndex(-1);

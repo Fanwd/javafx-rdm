@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -204,6 +205,30 @@ public class RedisDao {
     public long lpush(ConnectionProperties connectionProperties, String key, String value) {
         RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.lpush(key, value);
+    }
+
+    /**
+     * set获取数据
+     */
+    public Set<String> smembers(ConnectionProperties connectionProperties, String key) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.smembers(key);
+    }
+
+    /**
+     * set添加数据
+     */
+    public long sadd(ConnectionProperties connectionProperties, String key, String value) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.sadd(key, value);
+    }
+
+    /**
+     * set删除数据
+     */
+    public long srem(ConnectionProperties connectionProperties, String key, String value) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.srem(key, value);
     }
 
     /**

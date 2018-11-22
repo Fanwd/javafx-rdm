@@ -2,6 +2,7 @@ package com.fwd.rdm.data.domain;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @Author: fanwd
@@ -17,6 +18,7 @@ public class RedisData {
 
     private Map<String, String> hashData;
     private List<String> listData;
+    private Set<String> setData;
 
     public RedisData() {
     }
@@ -28,6 +30,13 @@ public class RedisData {
         this.value = value;
         this.hashData = hashData;
         this.listData = listData;
+    }
+
+    public RedisData(String key, String type, Long ttl, Set<String> setData) {
+        this.key = key;
+        this.type = type;
+        this.ttl = ttl;
+        this.setData = setData;
     }
 
     public String getKey() {
@@ -76,5 +85,13 @@ public class RedisData {
 
     public void setListData(List<String> listData) {
         this.listData = listData;
+    }
+
+    public Set<String> getSetData() {
+        return setData;
+    }
+
+    public void setSetData(Set<String> setData) {
+        this.setData = setData;
     }
 }

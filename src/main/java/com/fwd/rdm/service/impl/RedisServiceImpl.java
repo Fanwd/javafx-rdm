@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -47,18 +48,19 @@ public class RedisServiceImpl implements RedisService {
         // 查询key类型
         String type = redisDao.type(connectionProperties, key);
         KeyTypeEnum keyTypeEnum = KeyTypeEnum.typeOf(type);
+        Long ttl = redisDao.ttl(connectionProperties, key);
         if (KeyTypeEnum.STRING.equals(keyTypeEnum)) {
-            Long ttl = redisDao.ttl(connectionProperties, key);
             String value = redisDao.get(connectionProperties, key);
             return new RedisData(key, type, ttl, value, null, null);
         } else if (KeyTypeEnum.HASH.equals(keyTypeEnum)) {
-            Long ttl = redisDao.ttl(connectionProperties, key);
             Map<String, String> hashValue = redisDao.hgetAll(connectionProperties, key);
             return new RedisData(key, type, ttl, null, hashValue, null);
         } else if (KeyTypeEnum.LIST.equals(keyTypeEnum)) {
-            Long ttl = redisDao.ttl(connectionProperties, key);
             List<String> listData = redisDao.lrange(connectionProperties, key, 0, -1);
             return new RedisData(key, type, ttl, null, null, listData);
+        } else if (KeyTypeEnum.SET.equals(keyTypeEnum)) {
+            Set<String> setData = redisDao.smembers(connectionProperties, key);
+            return new RedisData(key, type, ttl, setData);
         } else {
             return new RedisData(key, type, null, null, null, null);
         }
@@ -98,12 +100,12 @@ public class RedisServiceImpl implements RedisService {
     // TODO add by fanwd at 2018/11/21-16:17 目前通过cas对list进行操作(由于未加锁小概率情况下会误更新)，但仍会存在bab的问题，可考虑对数据进行全量校验(会降低性能)
 
     @Override
-    public long lpush(ConnectionProperties connectionProperties, String key, String value) {
+    public long ladd(ConnectionProperties connectionProperties, String key, String value) {
         return redisDao.lpush(connectionProperties, key, value);
     }
 
     @Override
-    public boolean lset(ConnectionProperties connectionProperties, String key, String oldValue, String newValue, long index) {
+    public boolean lmodify(ConnectionProperties connectionProperties, String key, String oldValue, String newValue, long index) {
         String dbValue = redisDao.lindex(connectionProperties, key, index);
         if (!oldValue.equalsIgnoreCase(dbValue)) {
             // redis中的值已变更
@@ -115,7 +117,7 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    public boolean ldelete(ConnectionProperties connectionProperties, String key, String value, long index) {
+    public boolean ldel(ConnectionProperties connectionProperties, String key, String value, long index) {
         // 查询redis中的值
         String dbValue = redisDao.lindex(connectionProperties, key, index);
         if (!dbValue.equalsIgnoreCase(value)) {
@@ -129,6 +131,29 @@ public class RedisServiceImpl implements RedisService {
         // 删除list中所有被替换为删除占位符的数据
         redisDao.lrem(connectionProperties, key, LIST_REM_PLACEHOLDER);
         return true;
+    }
+
+    @Override
+    public Set<String> sget(ConnectionProperties connectionProperties, String key) {
+        return redisDao.smembers(connectionProperties, key);
+    }
+
+    @Override
+    public long sadd(ConnectionProperties connectionProperties, String key, String value) {
+        return redisDao.sadd(connectionProperties, key, value);
+    }
+
+    @Override
+    public long sdel(ConnectionProperties connectionProperties, String key, String val) {
+        return redisDao.srem(connectionProperties, key, val);
+    }
+
+    @Override
+    public long smodify(ConnectionProperties connectionProperties, String key, String oldValue, String newValue) {
+        // 删除旧数据
+        redisDao.srem(connectionProperties, key, oldValue);
+        // 添加新数据
+        return redisDao.sadd(connectionProperties, key, newValue);
     }
 
 }

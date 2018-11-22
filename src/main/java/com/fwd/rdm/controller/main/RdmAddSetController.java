@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 /**
  * @Author: fanwd
  * @Description:
- * @Date: Create in 16:59 2018/11/21
+ * @Date: Create in 14:51 2018/11/22
  */
 @FXMLController
-public class RdmAddListController {
+public class RdmAddSetController {
 
     @FXML
     private StackPane rootStackPane;
@@ -43,8 +43,8 @@ public class RdmAddListController {
         String value = valueTextArea.getText();
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
-        if (redisService.ladd(currentConnectionProperties, currentKey, value) > 0) {
-            rdmCenterObservableData.publishUpdateListEvent();
+        if (redisService.sadd(currentConnectionProperties, currentKey, value) > 0) {
+            rdmCenterObservableData.publishUpdateSetEvent();
             this.close();
         }
     }

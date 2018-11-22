@@ -117,7 +117,7 @@ public class RdmAddController {
             }
         } else if (KeyTypeEnum.LIST.equals(itemTypeEnum)) {
             // 添加list类型数据
-            if (redisService.lpush(connectionProperties, key, value) > 0) {
+            if (redisService.ladd(connectionProperties, key, value) > 0) {
                 rdmLeftMenuView.refreshCell(treeItem);
                 this.close();
             }
