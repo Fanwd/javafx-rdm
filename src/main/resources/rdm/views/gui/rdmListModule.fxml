@@ -67,7 +67,7 @@
                     <Double fx:constant="MAX_VALUE"></Double>
                 </maxWidth>
                 <graphic>
-                    <FontAwesomeIconView fill="lightgreen" glyphName="REFRESH"/>
+                    <FontAwesomeIconView fill="blue" glyphName="REFRESH"/>
                 </graphic>
             </Button>
         </VBox>
