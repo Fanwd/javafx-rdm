@@ -21,7 +21,7 @@
                    GridPane.hgrow="ALWAYS"/>
         <Label text="TTL:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
         <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        <Button text="Set TTL" onAction="#setTTL" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+        <Button text="设置TTL" onAction="#setTTL" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
     </GridPane>
     <Separator orientation="HORIZONTAL"></Separator>
     <VBox fx:id="valueBox" spacing="5" VBox.vgrow="ALWAYS">
