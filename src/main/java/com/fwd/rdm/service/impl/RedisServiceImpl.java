@@ -72,6 +72,21 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public boolean exists(ConnectionProperties connectionProperties, String key) {
+        return redisDao.exists(connectionProperties, key);
+    }
+
+    @Override
+    public boolean expire(ConnectionProperties connectionProperties, String key, long seconeds) {
+        return redisDao.expire(connectionProperties, key, seconeds);
+    }
+
+    @Override
+    public boolean persist(ConnectionProperties connectionProperties, String key) {
+        return redisDao.persist(connectionProperties, key);
+    }
+
+    @Override
     public boolean set(ConnectionProperties connectionProperties, String key, String value) {
         return redisDao.set(connectionProperties, key, value);
     }

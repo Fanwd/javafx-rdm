@@ -30,6 +30,23 @@ public interface RedisService {
     RedisData getRedisDataByKey(ConnectionProperties connectionProperties, String key);
 
     /**
+     * 查询key是否存在
+     * @return 存在返回true；不存在返回false
+     */
+    boolean exists(ConnectionProperties connectionProperties, String key);
+
+    /**
+     * 设置key过期时间
+     */
+    boolean expire(ConnectionProperties connectionProperties, String key, long seconeds);
+
+    /**
+     * 将Key设置为持久的（永不过期）
+     * @return 设置成功返回1，key不存在或者key已经是持久的返回0
+     */
+    boolean persist(ConnectionProperties connectionProperties, String key);
+
+    /**
      * 保存
      */
     boolean set(ConnectionProperties connectionProperties, String key, String value);

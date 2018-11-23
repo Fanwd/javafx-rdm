@@ -44,6 +44,16 @@ public class RdmCenterObservableData {
      */
     private LongProperty updateZsetFlag = new SimpleLongProperty(0);
 
+    /**
+     * 刷新TTL标志
+     */
+    private LongProperty updateTTLFlag = new SimpleLongProperty(0);
+
+    /**
+     * 刷新Key标志
+     */
+    private LongProperty updateKeyFlag = new SimpleLongProperty(0);
+
     public void setCurrentConnectionProperties(ConnectionProperties connectionProperties) {
         // 设置和获取数据时必须是在JavaFX Application线程
         assert Platform.isFxApplicationThread();
@@ -97,5 +107,21 @@ public class RdmCenterObservableData {
 
     public void publishUpdateZsetEvent() {
         this.updateZsetFlag.set(this.updateZsetFlag.get() + 1);
+    }
+
+    public LongProperty updateTTLEvent() {
+        return updateTTLFlag;
+    }
+
+    public void publishUpdateTTLEvent() {
+        this.updateTTLFlag.set(this.updateTTLFlag.get() + 1);
+    }
+
+    public LongProperty updateKeyEvent() {
+        return updateKeyFlag;
+    }
+
+    public void publishUpdateKeyEvent() {
+        this.updateKeyFlag.set(this.updateKeyFlag.get() + 1);
     }
 }

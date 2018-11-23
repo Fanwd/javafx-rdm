@@ -109,9 +109,35 @@ public class RedisDao {
     /**
      * 查询key剩余时间
      */
-    public Long ttl(ConnectionProperties connectionProperties, String key) {
+    public long ttl(ConnectionProperties connectionProperties, String key) {
         RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.ttl(key);
+    }
+
+    /**
+     * 检查key值是否存在
+     */
+    public boolean exists(ConnectionProperties connectionProperties, String key) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.exists(key) > 0;
+    }
+
+    /**
+     * 设置key有效期
+     */
+    public boolean expire(ConnectionProperties connectionProperties, String key, long seconeds) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.expire(key, seconeds);
+    }
+
+    /**
+     * 设置key为持久的
+     *
+     * @return 设置成功返回1，key不存在或者key已经是持久的返回0
+     */
+    public boolean persist(ConnectionProperties connectionProperties, String key) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.persist(key);
     }
 
     /**

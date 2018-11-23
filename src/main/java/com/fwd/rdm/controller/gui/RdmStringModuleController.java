@@ -9,6 +9,7 @@ import com.fwd.rdm.enums.ViewTypeEnum;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
+import com.fwd.rdm.views.main.RdmSetTTLView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
@@ -64,6 +65,9 @@ public class RdmStringModuleController {
 
     @Autowired
     private RdmCenterObservableData rdmCenterObservableData;
+
+    @Autowired
+    private RdmSetTTLView rdmSetTTLView;
 
     private RedisObservableData redisObservableData = new RedisObservableData();
 
@@ -125,5 +129,13 @@ public class RdmStringModuleController {
         } else {
             valueTextArea.setText(value);
         }
+    }
+
+    /**
+     * 设置ttl
+     */
+    @FXML
+    public void setTTL() {
+        rdmSetTTLView.show();
     }
 }

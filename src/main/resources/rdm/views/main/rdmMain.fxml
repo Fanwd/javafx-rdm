@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
@@ -13,7 +14,11 @@
         <BorderPane fx:id="bodyPane">
             <top>
                 <ToolBar>
-                    <Button fx:id="newButton" text="New Connection" onAction="#newConnection"></Button>
+                    <Button text="新建连接" onAction="#newConnection" prefWidth="240">
+                        <graphic>
+                            <FontAwesomeIconView fill="green" glyphName="PLUS_CIRCLE"></FontAwesomeIconView>
+                        </graphic>
+                    </Button>
                 </ToolBar>
             </top>
         </BorderPane>

@@ -8,8 +8,6 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -57,8 +55,6 @@ public class LoggerUtils {
     }
 
     public void alertError(String text) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, text);
-        alert.showAndWait();
         showAlert(text, Alert.AlertType.ERROR);
     }
 

@@ -26,6 +26,7 @@ maven
 2. 将数据模型改为观察者模式
 3. 添加运行状态监控
 4. 国际化
+5. 设置key的有效期
 
 #### maven打包
 1、http://www.jrsoftware.org/isdl.php安装iscc（用于生成exe安装包）
