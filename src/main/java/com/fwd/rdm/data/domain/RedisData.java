@@ -33,7 +33,7 @@ public class RedisData {
     }
 
     public RedisData(String key, String type, Long ttl, String value) {
-        this(key, type, ttl, type, null, null, null, null);
+        this(key, type, ttl, value, null, null, null, null);
     }
 
     public RedisData(String key, String type, Long ttl, Map<String, String> hashData) {

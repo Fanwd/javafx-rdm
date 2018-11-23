@@ -62,6 +62,10 @@
                 <configuration>
                     <vendor>fanwd</vendor>
                     <appName>JavaFX-rdm</appName>
+                    <!--创建桌面图标-->
+                    <needShortcut>true</needShortcut>
+                    <!--创建快捷方式到菜单-->
+                    <needMenu>true</needMenu>
                     <mainClass>com.fwd.rdm.RdmApplication</mainClass>
                 </configuration>
             </plugin>
