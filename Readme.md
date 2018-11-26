@@ -9,6 +9,8 @@ An redis client tools developed with JavaFX
 2. 支持连接信息的自动保存、加载；
 3. 支持数据类型：string、hash、list、set、zset
 4. 所有数据类型增删改
+5. 支持设置ttl
+6. 支持修改key名称
 
 #### 软件架构
 
