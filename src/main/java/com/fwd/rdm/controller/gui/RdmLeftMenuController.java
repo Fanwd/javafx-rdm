@@ -90,7 +90,12 @@ public class RdmLeftMenuController {
             });
             // 点击刷新按钮
             cell.onRefreshAction(event -> {
-                this.refreshCell(cell.getTreeItem());
+                try {
+                    this.refreshCell(cell.getTreeItem());
+                } catch (RuntimeException re) {
+                    re.printStackTrace();
+                    loggerUtils.error(re.toString());
+                }
             });
             // 点击删除按钮
             cell.onDeleteAction(event -> {
