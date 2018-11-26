@@ -7,6 +7,7 @@ import com.fwd.rdm.views.gui.RdmLeftMenuView;
 import com.fwd.rdm.views.submain.RdmNewConnectionFormView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
@@ -51,9 +52,12 @@ public class RdmMainController {
             rootPane.setPrefHeight(bounds.getHeight() / 1.35);
         } catch (Exception ex) {
         }
+        // 菜单
         bodyPane.setLeft(rdmLeftMenuView.getView());
         bodyPane.setCenter(rdmCenterView.getView());
+        // 状态栏
         bodyPane.setBottom(loggerUtils.getLabel());
+        BorderPane.setAlignment(loggerUtils.getLabel(), Pos.BOTTOM_LEFT);
     }
 
     /**
