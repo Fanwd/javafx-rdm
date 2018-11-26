@@ -80,10 +80,65 @@ public class RdmLeftMenuController {
         TreeItem<ConnectionTreeCell.TreeItemData> rootItem = new TreeItem<>(rootItemData);
         conTree.setRoot(rootItem);
 
+//        rootItem.getChildren().addListener((ListChangeListener<? super TreeItem<ConnectionTreeCell.TreeItemData>>) c -> {
+//            if (c.next()) {
+//                System.out.println(c.getAddedSize());
+//                System.out.println(c.getRemovedSize());
+//                System.out.println(c.getFrom());
+//                System.out.println(c.getTo());
+//            }
+//        });
+
         // 创建点击事件
         conTree.setCellFactory(view -> {
             ConnectionTreeCell cell = new ConnectionTreeCell();
             cell.prefWidthProperty().bind(conTree.widthProperty().add(cell.getFont().getSize() * -1.8));
+            // 点击上移按钮
+            cell.onMoveUpAction(event -> {
+                ConnectionTreeCell.TreeItemData itemData = cell.getItem();
+                ObservableList<TreeItem<ConnectionTreeCell.TreeItemData>> children = rootItem.getChildren();
+                int currentIndex = 0;
+                for (int i = 0; i < children.size(); i++) {
+                    TreeItem<ConnectionTreeCell.TreeItemData> childItem = children.get(i);
+                    if (childItem.getValue().getId() == itemData.getId()) {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+                if (currentIndex > 0) {
+                    TreeItem<ConnectionTreeCell.TreeItemData> previousItem = children.get(currentIndex - 1);
+                    children.remove(currentIndex - 1);
+                    children.add(currentIndex, previousItem);
+                    itemData.setBottom(false);
+                    if (currentIndex == 1) {
+                        itemData.setTop(true);
+                        previousItem.getValue().setTop(false);
+                    }
+                }
+            });
+            // 点击下移按钮
+            cell.onMoveDownAction(event -> {
+                ConnectionTreeCell.TreeItemData itemData = cell.getItem();
+                ObservableList<TreeItem<ConnectionTreeCell.TreeItemData>> children = rootItem.getChildren();
+                int currentIndex = 0;
+                for (int i = 0; i < children.size(); i++) {
+                    TreeItem<ConnectionTreeCell.TreeItemData> childItem = children.get(i);
+                    if (childItem.getValue().getId() == itemData.getId()) {
+                        currentIndex = i;
+                        break;
+                    }
+                }
+                if (currentIndex < children.size() - 1) {
+                    TreeItem<ConnectionTreeCell.TreeItemData> nextItem = children.get(currentIndex + 1);
+                    children.remove(currentIndex + 1);
+                    children.add(currentIndex, nextItem);
+                    itemData.setTop(false);
+                    if (currentIndex == children.size() - 2) {
+                        itemData.setBottom(true);
+                        nextItem.getValue().setBottom(false);
+                    }
+                }
+            });
             // 点击添加按钮
             cell.onAddAction(event -> {
                 rdmAddView.show(cell.getTreeItem());

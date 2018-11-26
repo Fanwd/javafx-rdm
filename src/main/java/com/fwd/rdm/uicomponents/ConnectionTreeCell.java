@@ -23,9 +23,22 @@ import javafx.scene.paint.Color;
 public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData> {
 
     /**
-     * 文本
+     * 节点内容文本
      */
     private Label textLabel = new Label();
+    /**
+     * 上移按钮
+     */
+    private FontAwesomeIconView upIcon = new FontAwesomeIconView(FontAwesomeIcon.ARROW_UP);
+    private Label upLabel = new Label(null, upIcon);
+    /**
+     * 下移按钮
+     */
+    private FontAwesomeIconView downIcon = new FontAwesomeIconView(FontAwesomeIcon.ARROW_DOWN);
+    private Label downLabel = new Label(null, downIcon);
+    /**
+     * 添加按钮
+     */
     private FontAwesomeIconView addIcon = new FontAwesomeIconView(FontAwesomeIcon.PLUS_CIRCLE);
     private Label addLabel = new Label(null, addIcon);
     /**
@@ -42,9 +55,11 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
     /**
      * 操作按钮box
      */
-    private HBox graphicBox = new HBox(addLabel, refreshLabel, deleteLabel);
+    private HBox graphicBox = new HBox(upLabel, downLabel, addLabel, refreshLabel, deleteLabel);
     private StackPane pane = new StackPane(textLabel, graphicBox);
 
+    private EventHandler<? super MouseEvent> upEvent;
+    private EventHandler<? super MouseEvent> downEvent;
     private EventHandler<? super MouseEvent> addEvent;
     private EventHandler<? super MouseEvent> refreshEvent;
     private EventHandler<? super MouseEvent> deleteEvent;
@@ -56,26 +71,40 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
         StackPane.setAlignment(textLabel, Pos.CENTER_LEFT);
         StackPane.setAlignment(graphicBox, Pos.CENTER_RIGHT);
 
+        upLabel.setOnMouseClicked(event -> {
+            // 上移按钮点击事件
+            if (null != upEvent) {
+                upEvent.handle(event);
+            }
+        });
+        downLabel.setOnMouseClicked(event -> {
+            // 下移按钮点击事件
+            if (null != downEvent) {
+                downEvent.handle(event);
+            }
+        });
         addLabel.setOnMouseClicked(event -> {
-            // 新增按钮
+            // 新增按钮点击事件
             if (null != addEvent) {
                 addEvent.handle(event);
             }
         });
         refreshLabel.setOnMouseClicked(event -> {
-            // 刷新key
+            // 刷新按钮点击事件
             if (null != refreshEvent) {
                 refreshEvent.handle(event);
             }
         });
         deleteLabel.setOnMouseClicked(event -> {
-            // 删除key
+            // 删除按钮点击事件
             if (deleteEvent != null) {
                 deleteEvent.handle(event);
             }
         });
 
         // 隐藏操作图标
+        upLabel.setVisible(false);
+        downLabel.setVisible(false);
         addLabel.setVisible(false);
         refreshLabel.setVisible(false);
         deleteLabel.setVisible(false);
@@ -83,28 +112,60 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
         selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue && !this.getItem().isRemove()) {
                 TreeItemData item = this.getItem();
+
+                // 新增按钮显隐控制
                 if (ItemTypeEnum.DATABASE.equals(item.itemTypeEnum)) {
-                    // 新增按钮显隐控制
                     addLabel.setVisible(true);
                 }
+
+                // 刷新按钮显隐控制
                 boolean showRefreshLabel = ItemTypeEnum.SERVER.equals(item.itemTypeEnum)
                         || ItemTypeEnum.DATABASE.equals(item.itemTypeEnum)
                         || (ItemTypeEnum.KEY.equals(item.itemTypeEnum) && !item.isLeaf());
                 if (showRefreshLabel) {
-                    // 刷新按钮显隐控制
                     refreshLabel.setVisible(true);
                 }
+
+                // 删除按钮显隐控制
                 if (ItemTypeEnum.SERVER.equals(item.itemTypeEnum)
                         || ItemTypeEnum.KEY.equals(item.itemTypeEnum)) {
-                    // 删除按钮显隐控制
                     deleteLabel.setVisible(true);
                 }
+
+                // 上移下移按钮
+                if (ItemTypeEnum.SERVER.equals(item.itemTypeEnum) && !this.getItem().isTop()) {
+                    upLabel.setVisible(true);
+                }
+                if (ItemTypeEnum.SERVER.equals(item.itemTypeEnum) && !this.getItem().isBottom()) {
+                    downLabel.setVisible(true);
+                }
             } else {
+                upLabel.setVisible(false);
+                downLabel.setVisible(false);
                 addLabel.setVisible(false);
                 refreshLabel.setVisible(false);
                 deleteLabel.setVisible(false);
             }
         });
+
+    }
+
+    /**
+     * 上移操作
+     *
+     * @param event
+     */
+    public void onMoveUpAction(EventHandler<? super MouseEvent> event) {
+        this.upEvent = event;
+    }
+
+    /**
+     * 下移操作
+     *
+     * @param event
+     */
+    public void onMoveDownAction(EventHandler<? super MouseEvent> event) {
+        this.downEvent = event;
     }
 
     /**
@@ -154,6 +215,32 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
                 textLabel.setGraphic(getTreeItem().getGraphic());
             }
 
+//            item.removeProperty().addListener((observable, oldValue, newValue) -> {
+//                if (newValue) {
+//                    upLabel.setVisible(false);
+//                    downLabel.setVisible(false);
+//                    addLabel.setVisible(false);
+//                    refreshLabel.setVisible(false);
+//                    deleteLabel.setVisible(false);
+//                }
+//            });
+//
+//            item.topProperty().addListener((observable, oldValue, newValue) -> {
+//                if (newValue) {
+//                    upLabel.setVisible(false);
+//                } else {
+//                    upLabel.setVisible(true);
+//                }
+//            });
+//
+//            item.bottomProperty().addListener((observable, oldValue, newValue) -> {
+//                if (newValue) {
+//                    downLabel.setVisible(false);
+//                } else {
+//                    downLabel.setVisible(true);
+//                }
+//            });
+
         }
     }
 
@@ -175,7 +262,18 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
          * 叶子节点
          */
         private BooleanProperty leaf = new SimpleBooleanProperty();
+        /**
+         * 删除标记
+         */
         private BooleanProperty remove = new SimpleBooleanProperty(false);
+        /**
+         * 是否是第一个节点
+         */
+        private BooleanProperty top = new SimpleBooleanProperty(false);
+        /**
+         * 是否是最后一个节点
+         */
+        private BooleanProperty bottom = new SimpleBooleanProperty(false);
 
         public TreeItemData() {
         }
@@ -197,6 +295,8 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
             this.connectionPropertiesObjectProperty.set(treeItemData.getConnectionPropertiesObjectProperty());
             this.leaf.set(treeItemData.isLeaf());
             this.remove.set(treeItemData.isRemove());
+            this.top.set(treeItemData.isTop());
+            this.bottom.set(treeItemData.isBottom());
         }
 
         public long getId() {
@@ -289,6 +389,30 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
 
         public void setRemove(boolean remove) {
             this.remove.set(remove);
+        }
+
+        public boolean isTop() {
+            return top.get();
+        }
+
+        public BooleanProperty topProperty() {
+            return top;
+        }
+
+        public void setTop(boolean top) {
+            this.top.set(top);
+        }
+
+        public boolean isBottom() {
+            return bottom.get();
+        }
+
+        public BooleanProperty bottomProperty() {
+            return bottom;
+        }
+
+        public void setBottom(boolean bottom) {
+            this.bottom.set(bottom);
         }
     }
 }
