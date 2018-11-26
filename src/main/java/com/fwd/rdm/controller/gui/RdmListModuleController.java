@@ -11,7 +11,7 @@ import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.utils.DragUtils;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
-import com.fwd.rdm.views.main.RdmAddListView;
+import com.fwd.rdm.views.submain.RdmAddListView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;

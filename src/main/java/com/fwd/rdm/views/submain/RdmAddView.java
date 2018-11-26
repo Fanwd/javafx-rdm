@@ -1,6 +1,6 @@
-package com.fwd.rdm.views.main;
+package com.fwd.rdm.views.submain;
 
-import com.fwd.rdm.controller.main.RdmAddController;
+import com.fwd.rdm.controller.submain.RdmAddController;
 import com.fwd.rdm.uicomponents.ConnectionTreeCell;
 import com.fwd.rdm.utils.StageHolder;
 import de.felixroske.jfxsupport.AbstractFxmlView;
@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Date: Create in 21:45 2018/11/14
  */
 @FXMLController
-@FXMLView(value = "/rdm/views/main/rdmAdd.fxml", css = {"/rdm/css/rdm.css"})
+@FXMLView(value = "/rdm/views/submain/rdmAdd.fxml", css = {"/rdm/css/rdm.css"})
 public class RdmAddView extends AbstractFxmlView {
 
     @Autowired

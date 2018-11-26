@@ -1,4 +1,4 @@
-package com.fwd.rdm.controller.main;
+package com.fwd.rdm.controller.submain;
 
 import com.fwd.rdm.data.RdmCenterObservableData;
 import com.fwd.rdm.data.domain.ConnectionProperties;
@@ -15,16 +15,13 @@ import org.springframework.util.StringUtils;
 /**
  * @Author: fanwd
  * @Description:
- * @Date: Create in 19:06 2018/11/20
+ * @Date: Create in 16:59 2018/11/21
  */
 @FXMLController
-public class RdmAddHashController {
+public class RdmAddListController {
 
     @FXML
     private StackPane rootStackPane;
-
-    @FXML
-    private TextArea fieldTextArea;
 
     @FXML
     private TextArea valueTextArea;
@@ -48,27 +45,28 @@ public class RdmAddHashController {
      */
     @FXML
     public void add() {
-        String field = fieldTextArea.getText();
         String value = valueTextArea.getText();
-        if (StringUtils.isEmpty(field)) {
-            loggerUtils.warn("Field should not be empty!!");
-            return;
-        }
         if (StringUtils.isEmpty(value)) {
             loggerUtils.warn("Value should not be empty!!");
             return;
         }
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
-        if (redisService.hset(currentConnectionProperties, currentKey, field, value)) {
-            rdmCenterObservableData.publishUpdateHashEvent();
-            this.cancel();
+        if (redisService.ladd(currentConnectionProperties, currentKey, value) > 0) {
+            rdmCenterObservableData.publishUpdateListEvent();
+            this.close();
         }
     }
 
     @FXML
     public void cancel() {
-        fieldTextArea.setText(null);
+        this.close();
+    }
+
+    /**
+     * 关闭窗口
+     */
+    private void close() {
         valueTextArea.setText(null);
         Stage currentStage = (Stage) rootStackPane.getScene().getWindow();
         currentStage.close();

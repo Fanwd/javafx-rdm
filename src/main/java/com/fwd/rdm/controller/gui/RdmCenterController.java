@@ -5,7 +5,7 @@ import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.data.domain.RedisData;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.views.gui.IModuleView;
-import com.fwd.rdm.views.main.RdmSetTTLView;
+import com.fwd.rdm.views.submain.RdmSetTTLView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;

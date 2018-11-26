@@ -8,11 +8,13 @@
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:id="rootStackPane"
-           fx:controller="com.fwd.rdm.controller.main.RdmAddListController">
+           fx:controller="com.fwd.rdm.controller.submain.RdmAddHashController">
     <VBox spacing="10" alignment="CENTER_LEFT">
         <padding>
             <Insets top="30" bottom="30" left="30" right="30"></Insets>
         </padding>
+        <Label text="Field:"></Label>
+        <TextArea fx:id="fieldTextArea"/>
         <Label text="Value:"/>
         <TextArea fx:id="valueTextArea"/>
         <HBox spacing="20" alignment="CENTER_RIGHT">

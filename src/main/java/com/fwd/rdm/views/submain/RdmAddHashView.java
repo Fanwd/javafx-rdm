@@ -1,4 +1,4 @@
-package com.fwd.rdm.views.main;
+package com.fwd.rdm.views.submain;
 
 import com.fwd.rdm.utils.StageHolder;
 import de.felixroske.jfxsupport.AbstractFxmlView;
@@ -10,18 +10,18 @@ import javafx.stage.Stage;
 /**
  * @Author: fanwd
  * @Description:
- * @Date: Create in 14:55 2018/11/22
+ * @Date: Create in 19:06 2018/11/20
  */
 @FXMLController
-@FXMLView(value = "/rdm/views/main/rdmAddSet.fxml", css = {"/rdm/css/rdm.css"})
-public class RdmAddSetView extends AbstractFxmlView {
+@FXMLView(value = "/rdm/views/submain/rdmAddHash.fxml", css = {"/rdm/css/rdm.css"})
+public class RdmAddHashView extends AbstractFxmlView {
 
     public void show() {
         Scene scene = this.getView().getScene();
         if (null == scene) {
             scene = new Scene(this.getView());
         }
-        Stage childStage = StageHolder.getChildStage("Add Set");
+        Stage childStage = StageHolder.getChildStage("Add Hash Data");
         childStage.setScene(scene);
         childStage.show();
     }

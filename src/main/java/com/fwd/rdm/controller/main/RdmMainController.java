@@ -4,7 +4,7 @@ import com.fwd.rdm.utils.LoggerUtils;
 import com.fwd.rdm.utils.StageHolder;
 import com.fwd.rdm.views.gui.RdmCenterView;
 import com.fwd.rdm.views.gui.RdmLeftMenuView;
-import com.fwd.rdm.views.main.RdmNewConnectionFormView;
+import com.fwd.rdm.views.submain.RdmNewConnectionFormView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
 import javafx.geometry.Rectangle2D;

@@ -11,7 +11,7 @@
       alignment="CENTER"
       fx:id="rootBox"
       spacing="15"
-      fx:controller="com.fwd.rdm.controller.main.RdmSetTTLController">
+      fx:controller="com.fwd.rdm.controller.submain.RdmSetTTLController">
     <padding>
         <Insets top="30" bottom="30" left="30" right="30"/>
     </padding>

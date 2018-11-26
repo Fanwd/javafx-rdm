@@ -9,13 +9,11 @@ import com.fwd.rdm.enums.ViewTypeEnum;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
-import com.fwd.rdm.views.main.RdmSetTTLView;
+import com.fwd.rdm.views.submain.RdmSetTTLView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
 

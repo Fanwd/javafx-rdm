@@ -12,7 +12,7 @@ import com.fwd.rdm.uicomponents.DoubleTextField;
 import com.fwd.rdm.utils.DragUtils;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
-import com.fwd.rdm.views.main.RdmAddZsetView;
+import com.fwd.rdm.views.submain.RdmAddZsetView;
 import de.felixroske.jfxsupport.FXMLController;
 import io.lettuce.core.ScoredValue;
 import javafx.collections.FXCollections;

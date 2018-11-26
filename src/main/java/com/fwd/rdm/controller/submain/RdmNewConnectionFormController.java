@@ -1,4 +1,4 @@
-package com.fwd.rdm.controller.main;
+package com.fwd.rdm.controller.submain;
 
 import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.service.NewConnectionService;

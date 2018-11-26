@@ -8,7 +8,7 @@ import com.fwd.rdm.uicomponents.ConnectionTreeCell;
 import com.fwd.rdm.utils.ConnectionXmlUtils;
 import com.fwd.rdm.utils.ListUtils;
 import com.fwd.rdm.utils.LoggerUtils;
-import com.fwd.rdm.views.main.RdmAddView;
+import com.fwd.rdm.views.submain.RdmAddView;
 import de.felixroske.jfxsupport.FXMLController;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;

@@ -1,4 +1,4 @@
-package com.fwd.rdm.views.main;
+package com.fwd.rdm.views.submain;
 
 import com.fwd.rdm.utils.StageHolder;
 import de.felixroske.jfxsupport.AbstractFxmlView;
@@ -13,7 +13,7 @@ import javafx.stage.Stage;
  * @Date: Create in 17:09 2018/11/21
  */
 @FXMLController
-@FXMLView(value = "/rdm/views/main/rdmAddList.fxml", css = {"/rdm/css/rdm.css"})
+@FXMLView(value = "/rdm/views/submain/rdmAddList.fxml", css = {"/rdm/css/rdm.css"})
 public class RdmAddListView extends AbstractFxmlView {
 
     public void show() {
