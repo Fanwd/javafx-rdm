@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      alignment="CENTER"
+      fx:id="rootBox"
+      spacing="15"
+      fx:controller="com.fwd.rdm.controller.submain.RdmSetKeyController">
+    <padding>
+        <Insets top="30" bottom="30" left="30" right="30"/>
+    </padding>
+    <HBox alignment="CENTER" spacing="10">
+        <Label text="Key:"/>
+        <TextField fx:id="keyTextField"/>
+    </HBox>
+    <HBox alignment="CENTER" spacing="10">
+        <Button text="修改" onAction="#rename" prefWidth="70"/>
+        <Button text="关闭" onAction="#cancel" prefWidth="70"/>
+    </HBox>
+
+</VBox>

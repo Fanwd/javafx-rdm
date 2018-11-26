@@ -36,6 +36,11 @@ public class RdmSetTTLController {
 
     @FXML
     public void initialize() {
+        rootBox.visibleProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                ttlTextField.setText(String.valueOf(rdmCenterObservableData.getCurrentTTL()));
+            }
+        });
     }
 
     /**
@@ -67,13 +72,13 @@ public class RdmSetTTLController {
         String ttl = ttlTextField.getText();
         if (StringUtils.isEmpty(ttl)) {
             // ttl不能为空
-            loggerUtils.warn("TTL不能为空!!");
+            loggerUtils.alertError("TTL不可以为空!!");
             return;
         }
         Long seconeds = Long.valueOf(ttl);
         if (seconeds < 0) {
             // ttl为大于等于0的整数
-            loggerUtils.warn("ttl应该为大于等于0的整数!!");
+            loggerUtils.alertError("TTL应该为大于等于0的整数!!");
             return;
         }
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();

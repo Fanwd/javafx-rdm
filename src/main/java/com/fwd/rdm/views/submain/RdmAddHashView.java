@@ -14,15 +14,9 @@ import javafx.stage.Stage;
  */
 @FXMLController
 @FXMLView(value = "/rdm/views/submain/rdmAddHash.fxml", css = {"/rdm/css/rdm.css"})
-public class RdmAddHashView extends AbstractFxmlView {
+public class RdmAddHashView extends AbstractSubFxmlView {
 
     public void show() {
-        Scene scene = this.getView().getScene();
-        if (null == scene) {
-            scene = new Scene(this.getView());
-        }
-        Stage childStage = StageHolder.getChildStage("Add Hash Data");
-        childStage.setScene(scene);
-        childStage.show();
+        super.show("添加hash数据");
     }
 }

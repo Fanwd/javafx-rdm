@@ -23,9 +23,10 @@
             <Label text="String:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
             <TextField fx:id="keyTextField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"
                        GridPane.hgrow="ALWAYS"/>
+            <Button text="重命名" onAction="#renameKey" prefWidth="80" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
             <Label text="TTL:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
             <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-            <Button text="设置TTL" onAction="#setTTL" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <Button text="设置TTL" onAction="#setTTL" prefWidth="80" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
         </GridPane>
         <Separator orientation="HORIZONTAL"/>
         <StackPane fx:id="centerScrollPane" VBox.vgrow="ALWAYS">

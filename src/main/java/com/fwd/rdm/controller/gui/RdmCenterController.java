@@ -5,6 +5,7 @@ import com.fwd.rdm.data.domain.ConnectionProperties;
 import com.fwd.rdm.data.domain.RedisData;
 import com.fwd.rdm.service.RedisService;
 import com.fwd.rdm.views.gui.IModuleView;
+import com.fwd.rdm.views.submain.RdmSetKeyView;
 import com.fwd.rdm.views.submain.RdmSetTTLView;
 import de.felixroske.jfxsupport.FXMLController;
 import javafx.fxml.FXML;
@@ -54,6 +55,9 @@ public class RdmCenterController {
     private RdmSetTTLView rdmSetTTLView;
 
     @Autowired
+    private RdmSetKeyView rdmSetKeyView;
+
+    @Autowired
     private RdmCenterObservableData rdmCenterObservableData;
 
     @Autowired
@@ -78,6 +82,8 @@ public class RdmCenterController {
         rdmCenterObservableData.setCurrentKey(key);
 
         RedisData redisData = redisService.getRedisKeyInfo(connectionProperties, key);
+        
+        rdmCenterObservableData.setCurrentTTL(redisData.getTtl());
 
         keyTextField.setText(key);
         ttlLabel.setText(String.valueOf(redisData.getTtl()));
@@ -105,8 +111,19 @@ public class RdmCenterController {
         return box404;
     }
 
+    /**
+     * 设置ttl
+     */
     @FXML
     public void setTTL() {
         rdmSetTTLView.show();
+    }
+
+    /**
+     * 重命名key
+     */
+    @FXML
+    public void renameKey() {
+        rdmSetKeyView.show();
     }
 }

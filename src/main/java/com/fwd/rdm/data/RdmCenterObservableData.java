@@ -25,6 +25,11 @@ public class RdmCenterObservableData {
     private static final ThreadLocal<String> currentKeyThreadLocal = new ThreadLocal<>();
 
     /**
+     * 当前TTL
+     */
+    private static final ThreadLocal<Long> currentTTLThreadLocal = new ThreadLocal<>();
+
+    /**
      * 刷新hash数据标志
      */
     private LongProperty updateHashFlag = new SimpleLongProperty(0);
@@ -68,6 +73,16 @@ public class RdmCenterObservableData {
     public String getCurrentKey() {
         assert Platform.isFxApplicationThread();
         return currentKeyThreadLocal.get();
+    }
+
+    public void setCurrentTTL(Long ttl) {
+        assert Platform.isFxApplicationThread();
+        currentTTLThreadLocal.set(ttl);
+    }
+
+    public Long getCurrentTTL() {
+        assert Platform.isFxApplicationThread();
+        return currentTTLThreadLocal.get();
     }
 
     public LongProperty updateHashEvent() {

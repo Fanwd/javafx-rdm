@@ -14,15 +14,9 @@ import javafx.stage.Stage;
  */
 @FXMLController
 @FXMLView(value = "/rdm/views/submain/rdmSetTTL.fxml", css = {"/rdm/css/rdm.css"})
-public class RdmSetTTLView extends AbstractFxmlView {
+public class RdmSetTTLView extends AbstractSubFxmlView {
 
     public void show() {
-        Scene scene = this.getView().getScene();
-        if (null == scene) {
-            scene = new Scene(this.getView());
-        }
-        Stage childStage = StageHolder.getChildStage("Set TTL");
-        childStage.setScene(scene);
-        childStage.show();
+        super.show("修改TTL");
     }
 }

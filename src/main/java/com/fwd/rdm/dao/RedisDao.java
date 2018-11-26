@@ -131,6 +131,16 @@ public class RedisDao {
     }
 
     /**
+     * 重命名（如果新的key不存在时，将key该为newKey）
+     *
+     * @return 修改成果返回1，newKey已存在或key不存在时返回0
+     */
+    public boolean renamenx(ConnectionProperties connectionProperties, String key, String newKey) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.renamenx(key, newKey);
+    }
+
+    /**
      * 设置key为持久的
      *
      * @return 设置成功返回1，key不存在或者key已经是持久的返回0

@@ -14,15 +14,9 @@ import javafx.stage.Stage;
  */
 @FXMLController
 @FXMLView(value = "/rdm/views/submain/rdmAddList.fxml", css = {"/rdm/css/rdm.css"})
-public class RdmAddListView extends AbstractFxmlView {
+public class RdmAddListView extends AbstractSubFxmlView {
 
     public void show() {
-        Scene scene = this.getView().getScene();
-        if (null == scene) {
-            scene = new Scene(this.getView());
-        }
-        Stage childStage = StageHolder.getChildStage("Add List");
-        childStage.setScene(scene);
-        childStage.show();
+        super.show("添加list数据");
     }
 }
