@@ -42,18 +42,6 @@ public class RdmListModuleController {
     private VBox rootBox;
 
     /**
-     * key
-     */
-    @FXML
-    private TextField keyTextField;
-
-    /**
-     * key有效时间
-     */
-    @FXML
-    private Label ttlLabel;
-
-    /**
      * 数据展示类型选择框
      */
     @FXML
@@ -120,8 +108,6 @@ public class RdmListModuleController {
         DragUtils.vResizeDrag(dataTableBox, dragLine, valueBox);
 
         // 数据绑定
-        keyTextField.textProperty().bind(redisObservableData.keyProperty());
-        ttlLabel.textProperty().bind(redisObservableData.ttlProperty());
         redisObservableData.valueProperty().addListener((observable, oldValue, newValue) -> {
             this.showValue(newValue);
         });

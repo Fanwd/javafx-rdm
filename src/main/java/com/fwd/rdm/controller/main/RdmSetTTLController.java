@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * @Author: fanwd
- * @Description:
+ * @Description: 更新ttl
  * @Date: Create in 14:21 2018/11/23
  */
 @FXMLController
@@ -47,7 +47,7 @@ public class RdmSetTTLController {
         String currentKey = rdmCenterObservableData.getCurrentKey();
         if (redisService.persist(currentConnectionProperties, currentKey)) {
             // 设置成功
-            rdmCenterObservableData.publishUpdateTTLEvent();
+            rdmCenterObservableData.publishUpdateKeyInfoEvent();
             this.close();
         } else if (!redisService.exists(currentConnectionProperties, currentKey)) {
             // key值不存在
@@ -80,7 +80,7 @@ public class RdmSetTTLController {
         String currentKey = rdmCenterObservableData.getCurrentKey();
         if (redisService.expire(currentConnectionProperties, currentKey, seconeds)) {
             // 设置成功，刷新ttl
-            rdmCenterObservableData.publishUpdateTTLEvent();
+            rdmCenterObservableData.publishUpdateKeyInfoEvent();
             this.close();
         } else if (!redisService.exists(currentConnectionProperties, currentKey)) {
             // key不存在

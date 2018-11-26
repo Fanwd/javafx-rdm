@@ -2,28 +2,16 @@
 
 <?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView?>
 <?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.String?>
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.fwd.rdm.controller.gui.RdmStringModuleController"
       fx:id="rootBox" visible="true" spacing="10" alignment="TOP_LEFT">
-    <GridPane fx:id="gridPane" alignment="CENTER_LEFT" hgap="10" vgap="10">
-        <columnConstraints>
-            <!--第一列右对齐，第二列左对齐, 第三列居中-->
-            <ColumnConstraints halignment="RIGHT"/>
-            <ColumnConstraints halignment="LEFT"/>
-            <ColumnConstraints halignment="CENTER"/>
-        </columnConstraints>
-        <Label text="String:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <TextField fx:id="keyTextField" editable="false" GridPane.columnIndex="1" GridPane.rowIndex="0"
-                   GridPane.hgrow="ALWAYS"/>
-        <Label text="TTL:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <Label fx:id="ttlLabel" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-        <Button text="设置TTL" onAction="#setTTL" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
-    </GridPane>
-    <Separator orientation="HORIZONTAL"></Separator>
     <VBox fx:id="valueBox" spacing="5" VBox.vgrow="ALWAYS">
         <!--value显示-->
         <StackPane>

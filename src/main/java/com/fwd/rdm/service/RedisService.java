@@ -25,6 +25,11 @@ public interface RedisService {
     List<String> getKeys(ConnectionProperties connectionProperties, String pattern);
 
     /**
+     * 查询key信息
+     */
+    public RedisData getRedisKeyInfo(ConnectionProperties connectionProperties, String key);
+
+    /**
      * 根据key查询数据
      */
     RedisData getRedisDataByKey(ConnectionProperties connectionProperties, String key);

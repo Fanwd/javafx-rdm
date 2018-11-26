@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,7 +33,7 @@ public class RdmCenterController {
     public VBox baseBox;
 
     @FXML
-    public ScrollPane centerScrollPane;
+    public StackPane centerScrollPane;
 
     /**
      * Key
@@ -60,6 +61,13 @@ public class RdmCenterController {
 
     @FXML
     public void initialize() {
+        rdmCenterObservableData.updateKeyInfoEvent().addListener((observable, oldValue, newValue) -> {
+            ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
+            String currentKey = rdmCenterObservableData.getCurrentKey();
+            RedisData redisData = redisService.getRedisKeyInfo(currentConnectionProperties, currentKey);
+            keyTextField.setText(redisData.getKey());
+            ttlLabel.setText(String.valueOf(redisData.getTtl()));
+        });
     }
 
     /**
@@ -69,25 +77,32 @@ public class RdmCenterController {
         rdmCenterObservableData.setCurrentConnectionProperties(connectionProperties);
         rdmCenterObservableData.setCurrentKey(key);
 
-        RedisData redisData = redisService.getRedisDataByKey(connectionProperties, key);
+        RedisData redisData = redisService.getRedisKeyInfo(connectionProperties, key);
+
+        keyTextField.setText(key);
+        ttlLabel.setText(String.valueOf(redisData.getTtl()));
 
         String type = redisData.getType();
         for (IModuleView iModuleView : moduleViewList) {
             if (iModuleView.isSupport(type)) {
-                rootScrollPane.setContent(iModuleView.getModuleView());
+                baseBox.setVisible(true);
+                baseBox.setManaged(true);
+                rootScrollPane.setContent(baseBox);
+                centerScrollPane.getChildren().setAll(iModuleView.getModuleView());
                 return;
             }
         }
-        VBox notSupportBox = new VBox();
-        notSupportBox.setSpacing(20);
-        notSupportBox.setAlignment(Pos.CENTER);
+        rootScrollPane.setContent(this.show404());
+    }
+
+    private VBox show404() {
+        VBox box404 = new VBox();
+        box404.setSpacing(20);
+        box404.setAlignment(Pos.CENTER);
         Label label404 = new Label("404");
-        Label labelErrorInfo = new Label("暂不支持'" + type + "'类型数据!!");
-        if (!redisService.exists(connectionProperties, key)) {
-            labelErrorInfo.setText("Key '" + key + "'不存在");
-        }
-        notSupportBox.getChildren().addAll(label404, labelErrorInfo);
-        rootScrollPane.setContent(notSupportBox);
+        Label labelErrorInfo = new Label("所选Key不存在");
+        box404.getChildren().addAll(label404, labelErrorInfo);
+        return box404;
     }
 
     @FXML

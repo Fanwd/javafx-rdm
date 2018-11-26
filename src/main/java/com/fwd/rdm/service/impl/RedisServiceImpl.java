@@ -45,6 +45,14 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    public RedisData getRedisKeyInfo(ConnectionProperties connectionProperties, String key) {
+        // 查询key类型
+        String type = redisDao.type(connectionProperties, key);
+        Long ttl = redisDao.ttl(connectionProperties, key);
+        return new RedisData(key, type, ttl);
+    }
+
+    @Override
     public RedisData getRedisDataByKey(ConnectionProperties connectionProperties, String key) {
         // 查询key类型
         String type = redisDao.type(connectionProperties, key);
