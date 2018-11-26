@@ -230,6 +230,9 @@ public class RdmLeftMenuController {
      * treeItem事件处理
      */
     private void treeItemAction(TreeItem<ConnectionTreeCell.TreeItemData> treeItem) {
+        if (null == treeItem) {
+            return;
+        }
         // 获取当前点击节点
         TreeItem<ConnectionTreeCell.TreeItemData> selectedItem = treeItem;
         // 获取当前节点数据
