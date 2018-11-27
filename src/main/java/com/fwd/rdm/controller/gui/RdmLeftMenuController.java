@@ -87,6 +87,9 @@ public class RdmLeftMenuController {
             // 点击上移按钮
             cell.onMoveUpAction(event -> {
                 ConnectionTreeCell.TreeItemData itemData = cell.getItem();
+                if (!ItemTypeEnum.SERVER.equals(itemData.getItemTypeEnum())) {
+                    return;
+                }
                 ObservableList<TreeItem<ConnectionTreeCell.TreeItemData>> children = rootItem.getChildren();
                 int currentIndex = 0;
                 for (int i = 0; i < children.size(); i++) {
@@ -115,6 +118,9 @@ public class RdmLeftMenuController {
             // 点击下移按钮
             cell.onMoveDownAction(event -> {
                 ConnectionTreeCell.TreeItemData itemData = cell.getItem();
+                if (!ItemTypeEnum.SERVER.equals(itemData.getItemTypeEnum())) {
+                    return;
+                }
                 ObservableList<TreeItem<ConnectionTreeCell.TreeItemData>> children = rootItem.getChildren();
                 int currentIndex = 0;
                 for (int i = 0; i < children.size(); i++) {
