@@ -17,7 +17,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,6 +198,9 @@ public class RdmHashModuleController {
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
         String value = valueTextArea.getText();
+        if (ViewTypeEnum.isJson(viewType.getValue())) {
+            value = JsonUtils.dePrettyJsonString(value);
+        }
         String field = fieldTextArea.getText();
         if (StringUtils.isEmpty(field)) {
             loggerUtils.alertWarn("Field Not Selected");
@@ -205,11 +211,11 @@ public class RdmHashModuleController {
         this.redisObservableData.setValue(value);
         // 刷新页面数据
         ObservableList<HashData> hashDataList = this.redisObservableData.getHashDataList();
-        hashDataList.forEach(hashData -> {
+        for (HashData hashData : hashDataList) {
             if (hashData.getField().equals(field)) {
                 hashData.setValue(value);
             }
-        });
+        }
         tableHashDataList.clear();
         tableHashDataList.addAll(hashDataList);
     }

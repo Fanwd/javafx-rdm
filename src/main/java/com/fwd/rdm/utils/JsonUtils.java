@@ -28,4 +28,29 @@ public class JsonUtils {
             return jsonString;
         }
     }
+
+    /**
+     * 去除json格式化
+     */
+    public static String dePrettyJsonString(String prettyJson) {
+        if (StringUtils.isEmpty(prettyJson)) {
+            return prettyJson;
+        }
+        // 去除json格式化
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            Object object = mapper.readValue(prettyJson, Object.class);
+            return mapper.writer().writeValueAsString(object);
+        } catch (IOException e) {
+            return prettyJson;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        String json = "{\"name\":\"fanwd\"}";
+        System.out.println(json);
+        String prettyJson = prettyJsonString(json);
+        System.out.println(prettyJson);
+        System.out.println(dePrettyJsonString(prettyJson));
+    }
 }

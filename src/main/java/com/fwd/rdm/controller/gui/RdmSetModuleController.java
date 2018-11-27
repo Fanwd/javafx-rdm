@@ -1,7 +1,10 @@
 package com.fwd.rdm.controller.gui;
 
 import com.fwd.rdm.data.RdmCenterObservableData;
-import com.fwd.rdm.data.domain.*;
+import com.fwd.rdm.data.domain.ConnectionProperties;
+import com.fwd.rdm.data.domain.RedisData;
+import com.fwd.rdm.data.domain.RedisObservableData;
+import com.fwd.rdm.data.domain.SetData;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.enums.ViewTypeEnum;
 import com.fwd.rdm.service.RedisService;
@@ -14,7 +17,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -183,6 +189,9 @@ public class RdmSetModuleController {
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
         String value = valueTextArea.getText();
+        if (ViewTypeEnum.isJson(viewType.getValue())) {
+            value = JsonUtils.dePrettyJsonString(value);
+        }
         long index = redisObservableData.getIndex();
         if (StringUtils.isEmpty(value) || index == -1) {
             loggerUtils.alertWarn("Field Not Selected");

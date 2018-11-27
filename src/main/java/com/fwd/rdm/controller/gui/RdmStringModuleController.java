@@ -98,6 +98,9 @@ public class RdmStringModuleController {
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
         String value = valueTextArea.getText();
+        if (ViewTypeEnum.isJson(viewType.getValue())) {
+            value = JsonUtils.dePrettyJsonString(value);
+        }
         // 字符串
         redisService.set(currentConnectionProperties, currentKey, value);
         this.redisObservableData.setValue(value);
@@ -113,13 +116,5 @@ public class RdmStringModuleController {
         } else {
             valueTextArea.setText(value);
         }
-    }
-
-    /**
-     * 设置ttl
-     */
-    @FXML
-    public void setTTL() {
-        rdmSetTTLView.show();
     }
 }
