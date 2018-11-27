@@ -6,7 +6,6 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.*;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
@@ -112,10 +111,15 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
 
         // 隐藏操作图标
         upLabel.setVisible(false);
+        upLabel.managedProperty().bind(upLabel.visibleProperty());
         downLabel.setVisible(false);
+        downLabel.managedProperty().bind(downLabel.visibleProperty());
         addLabel.setVisible(false);
+        addLabel.managedProperty().bind(addLabel.visibleProperty());
         refreshLabel.setVisible(false);
+        refreshLabel.managedProperty().bind(refreshLabel.visibleProperty());
         deleteLabel.setVisible(false);
+        deleteLabel.managedProperty().bind(deleteLabel.visibleProperty());
         // 选中时显示图标
         selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue && !this.getItem().isRemove()) {
