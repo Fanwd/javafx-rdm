@@ -19,9 +19,9 @@ import javafx.scene.Cursor;
 import javafx.scene.control.Separator;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -62,7 +62,6 @@ public class RdmLeftMenuController {
      */
     @FXML
     public void initialize() {
-
         // 左侧窗口拖拽大小
         leftLine.setCursor(Cursor.W_RESIZE);
         leftLine.setOnMouseDragged(event -> {
@@ -75,7 +74,7 @@ public class RdmLeftMenuController {
         });
 
         // 初始化根节点
-        ConnectionProperties rootProperties = new ConnectionProperties(-1, "服务器连接列表", "", 0, "", 0, 0);
+        ConnectionProperties rootProperties = new ConnectionProperties(-1, "服务器连接列表", "", 0, "", 0, 0, 0);
         ConnectionTreeCell.TreeItemData rootItemData = new ConnectionTreeCell.TreeItemData(rootProperties, rootProperties.getName(), false, ItemTypeEnum.ROOT);
         TreeItem<ConnectionTreeCell.TreeItemData> rootItem = new TreeItem<>(rootItemData);
         conTree.setRoot(rootItem);
@@ -84,6 +83,55 @@ public class RdmLeftMenuController {
         conTree.setCellFactory(view -> {
             ConnectionTreeCell cell = new ConnectionTreeCell();
             cell.prefWidthProperty().bind(conTree.widthProperty().add(cell.getFont().getSize() * -1.8));
+
+            // 拖拽排序-开始
+            cell.setOnDragDetected(event -> {
+                if (!ItemTypeEnum.SERVER.equals(cell.getItem().getItemTypeEnum())) {
+                    return;
+                }
+                Dragboard dragboard = cell.startDragAndDrop(TransferMode.ANY);
+                ClipboardContent content = new ClipboardContent();
+                content.putString(String.valueOf(cell.getItem().getId()));
+                dragboard.setContent(content);
+                event.consume();
+            });
+            cell.setOnDragOver(event -> {
+                if (!ItemTypeEnum.SERVER.equals(cell.getItem().getItemTypeEnum())) {
+                    return;
+                }
+                if (event.getGestureSource() != cell) {
+                    event.acceptTransferModes(TransferMode.MOVE);
+                    event.consume();
+                }
+            });
+            cell.setOnDragDropped(event -> {
+                ClipboardContent content = new ClipboardContent();
+                content.putString(String.valueOf(cell.getItem().getId()));
+                event.getDragboard().setContent(content);
+                event.setDropCompleted(true);
+                event.consume();
+            });
+            cell.setOnDragDone(event -> {
+                long end = Long.valueOf(event.getDragboard().getString());
+                long start = cell.getItem().getId();
+                rdmObservableData.exchangeOrderNo(start, end);
+                event.getDragboard().clear();
+                event.consume();
+            });
+            cell.setOnDragEntered(event -> {
+                if (event.getGestureSource() != cell) {
+                    cell.setLabelFill(Color.GREEN);
+                    cell.addBorder();
+                }
+            });
+            cell.setOnDragExited(event -> {
+                if (event.getGestureSource() != cell) {
+                    cell.setLabelFill(Color.BLACK);
+                    cell.removeBorder();
+                }
+            });
+            // 拖拽排序-结束
+
             // 点击上移按钮
             cell.onMoveUpAction(event -> {
                 ConnectionTreeCell.TreeItemData itemData = cell.getItem();
@@ -91,27 +139,12 @@ public class RdmLeftMenuController {
                     return;
                 }
                 ObservableList<TreeItem<ConnectionTreeCell.TreeItemData>> children = rootItem.getChildren();
-                int currentIndex = 0;
-                for (int i = 0; i < children.size(); i++) {
+                for (int i = 1; i < children.size(); i++) {
                     TreeItem<ConnectionTreeCell.TreeItemData> childItem = children.get(i);
                     if (childItem.getValue().getId() == itemData.getId()) {
-                        currentIndex = i;
+                        // 交换当前节点与上一个节点的排序号
+                        rdmObservableData.exchangeOrderNo(children.get(i).getValue().getId(), children.get(i - 1).getValue().getId());
                         break;
-                    }
-                }
-                if (currentIndex > 0) {
-                    TreeItem<ConnectionTreeCell.TreeItemData> previousItem = children.get(currentIndex - 1);
-                    children.remove(currentIndex - 1);
-                    children.add(currentIndex, previousItem);
-                    itemData.setBottom(false);
-                    if (currentIndex == 1) {
-                        // 上移节点是第二个
-                        itemData.setTop(true);
-                        previousItem.getValue().setTop(false);
-                    }
-                    if (currentIndex == children.size() - 1) {
-                        // 上移节点是最后一个，则倒数第二个节点成为最后一个节点
-                        previousItem.getValue().setBottom(true);
                     }
                 }
             });
@@ -122,27 +155,12 @@ public class RdmLeftMenuController {
                     return;
                 }
                 ObservableList<TreeItem<ConnectionTreeCell.TreeItemData>> children = rootItem.getChildren();
-                int currentIndex = 0;
-                for (int i = 0; i < children.size(); i++) {
+                for (int i = 0; i < children.size() - 1; i++) {
                     TreeItem<ConnectionTreeCell.TreeItemData> childItem = children.get(i);
                     if (childItem.getValue().getId() == itemData.getId()) {
-                        currentIndex = i;
+                        // 交换当前节点与下一个节点的排序号
+                        rdmObservableData.exchangeOrderNo(children.get(i).getValue().getId(), children.get(i + 1).getValue().getId());
                         break;
-                    }
-                }
-                if (currentIndex < children.size() - 1) {
-                    TreeItem<ConnectionTreeCell.TreeItemData> nextItem = children.get(currentIndex + 1);
-                    children.remove(currentIndex + 1);
-                    children.add(currentIndex, nextItem);
-                    itemData.setTop(false);
-                    if (currentIndex == children.size() - 2) {
-                        // 下移节点是倒数第二个
-                        itemData.setBottom(true);
-                        nextItem.getValue().setBottom(false);
-                    }
-                    if (currentIndex == 0) {
-                        // 下移节点是第一个，则下一个节点变为第一个节点
-                        nextItem.getValue().setTop(true);
                     }
                 }
             });
@@ -218,11 +236,29 @@ public class RdmLeftMenuController {
                         }
                     }
                 }
+                // 排序
+                ObservableList<? extends ConnectionProperties> list = c.getList();
+                Map<Long, Integer> idOrderMap = new HashMap<>();
+                for (ConnectionProperties connectionProperties : list) {
+                    idOrderMap.put(connectionProperties.getId(), connectionProperties.getOrderNo());
+                }
+                rootItem.getChildren().forEach(treeItem -> {
+                    if (idOrderMap.containsKey(treeItem.getValue().getId())) {
+                        treeItem.getValue().setOrderNo(idOrderMap.get(treeItem.getValue().getId()));
+                        treeItem.getValue().setTop(false);
+                        treeItem.getValue().setBottom(false);
+                    }
+                });
+                rootItem.getChildren().sort(Comparator.comparingInt(data -> data.getValue().getOrderNo()));
                 ObservableList<TreeItem<ConnectionTreeCell.TreeItemData>> children = rootItem.getChildren();
                 if (!children.isEmpty()) {
                     // 设置节点状态
                     children.get(0).getValue().setTop(true);
                     children.get(children.size() - 1).getValue().setBottom(true);
+                    if (children.size() > 1) {
+                        children.get(0).getValue().setBottom(false);
+                        children.get(children.size() - 1).getValue().setTop(false);
+                    }
                 }
             }
         });

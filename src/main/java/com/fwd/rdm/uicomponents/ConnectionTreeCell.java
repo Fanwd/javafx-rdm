@@ -6,15 +6,17 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.*;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TreeCell;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+
+import java.io.Serializable;
 
 /**
  * @Author: fanwd
@@ -223,10 +225,39 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
         }
     }
 
+    /**
+     * 添加边框
+     */
+    public void addBorder() {
+        textLabel.setBorder(
+                new Border(
+                        new BorderStroke(
+                                Color.GREEN, BorderStrokeStyle.DASHED, new CornerRadii(1), new BorderWidths(1)
+                        )
+                )
+        );
+    }
+
+    /**
+     * 删除边框
+     */
+    public void removeBorder() {
+        textLabel.setBorder(Border.EMPTY);
+    }
+
+    /**
+     * 设置文字颜色
+     *
+     * @param paint
+     */
+    public void setLabelFill(Paint paint) {
+        textLabel.setTextFill(paint);
+    }
+
     public static class TreeData extends TreeItemData {
     }
 
-    public static class TreeItemData {
+    public static class TreeItemData implements Serializable {
 
         private LongProperty id = new SimpleLongProperty();
         private StringProperty key = new SimpleStringProperty();
@@ -254,12 +285,18 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
          */
         private BooleanProperty bottom = new SimpleBooleanProperty(false);
 
+        /**
+         * 排序号
+         */
+        private IntegerProperty orderNo = new SimpleIntegerProperty();
+
         public TreeItemData() {
         }
 
         public TreeItemData(ConnectionProperties connectionPropertiesObjectProperty, String text, boolean leaf, ItemTypeEnum itemTypeEnum) {
             this.connectionPropertiesObjectProperty.set(connectionPropertiesObjectProperty);
             this.id.set(connectionPropertiesObjectProperty.getId());
+            this.orderNo.set(connectionPropertiesObjectProperty.getOrderNo());
             this.text.set(text);
             this.leaf.set(leaf);
             this.itemTypeEnum = itemTypeEnum;
@@ -276,6 +313,7 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
             this.remove.set(treeItemData.isRemove());
             this.top.set(treeItemData.isTop());
             this.bottom.set(treeItemData.isBottom());
+            this.orderNo.set(treeItemData.getOrderNo());
         }
 
         public long getId() {
@@ -392,6 +430,18 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
 
         public void setBottom(boolean bottom) {
             this.bottom.set(bottom);
+        }
+
+        public int getOrderNo() {
+            return orderNo.get();
+        }
+
+        public IntegerProperty orderNoProperty() {
+            return orderNo;
+        }
+
+        public void setOrderNo(int orderNo) {
+            this.orderNo.set(orderNo);
         }
     }
 }

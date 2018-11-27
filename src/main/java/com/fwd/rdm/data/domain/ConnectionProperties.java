@@ -37,6 +37,10 @@ public class ConnectionProperties {
      * 当前数据库key个数
      */
     private IntegerProperty keyCount = new SimpleIntegerProperty();
+    /**
+     * 排序号
+     */
+    private IntegerProperty orderNo = new SimpleIntegerProperty();
 
     public ConnectionProperties() {
     }
@@ -49,9 +53,10 @@ public class ConnectionProperties {
         this.auth.set(connectionProperties.getAuth());
         this.dbIndex.set(connectionProperties.getDbIndex());
         this.keyCount.set(connectionProperties.getKeyCount());
+        this.orderNo.set(connectionProperties.getOrderNo());
     }
 
-    public ConnectionProperties(long id, String name, String ip, int port, String auth, int dbIndex, int keyCount) {
+    public ConnectionProperties(long id, String name, String ip, int port, String auth, int dbIndex, int keyCount, int orderNo) {
         this.id.set(id);
         this.name.set(name);
         this.ip.set(ip);
@@ -59,6 +64,7 @@ public class ConnectionProperties {
         this.auth.set(auth);
         this.dbIndex.set(dbIndex);
         this.keyCount.set(keyCount);
+        this.orderNo.set(orderNo);
     }
 
     public long getId() {
@@ -143,5 +149,17 @@ public class ConnectionProperties {
 
     public void setKeyCount(int keyCount) {
         this.keyCount.set(keyCount);
+    }
+
+    public int getOrderNo() {
+        return orderNo.get();
+    }
+
+    public IntegerProperty orderNoProperty() {
+        return orderNo;
+    }
+
+    public void setOrderNo(int orderNo) {
+        this.orderNo.set(orderNo);
     }
 }

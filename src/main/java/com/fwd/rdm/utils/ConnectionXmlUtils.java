@@ -12,10 +12,7 @@ import org.springframework.util.StringUtils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @Author: fanwd
@@ -68,6 +65,8 @@ public class ConnectionXmlUtils {
                         connectionProperties.setPort(Integer.valueOf(String.valueOf(data)));
                     } else if ("auth".equalsIgnoreCase(name)) {
                         connectionProperties.setAuth(String.valueOf(data == null ? "" : data));
+                    } else if ("orderNo".equalsIgnoreCase(name)) {
+                        connectionProperties.setOrderNo(Integer.valueOf(String.valueOf(data == null ? 0 : data)));
                     }
                 }
                 resultList.add(connectionProperties);
@@ -80,12 +79,12 @@ public class ConnectionXmlUtils {
     }
 
     public static void save(List<ConnectionProperties> list) throws IOException {
-        if (null == list || list.isEmpty()) {
-            return;
-        }
+        List<ConnectionProperties> writeList = new ArrayList<>(list);
+        writeList.sort(Comparator.comparingInt(ConnectionProperties::getOrderNo));
         Document document = new DefaultDocument();
         Element rootElement = document.addElement("root");
-        list.forEach(connectionProperties -> {
+        for (int i = 0; i < writeList.size(); i++) {
+            ConnectionProperties connectionProperties = writeList.get(i);
             Element conElement = rootElement.addElement("connectionProperties");
             Element id = conElement.addElement("id");
             id.setText(getString(connectionProperties.getId()));
@@ -97,7 +96,9 @@ public class ConnectionXmlUtils {
             port.setText(getString(connectionProperties.getPort()));
             Element auth = conElement.addElement("auth");
             auth.setText(getString(connectionProperties.getAuth()));
-        });
+            Element sort = conElement.addElement("orderNo");
+            sort.setText(getString(i));
+        }
         String fullFileName = getFullFileName();
         File file = new File(fullFileName);
         if (!file.exists()) {
