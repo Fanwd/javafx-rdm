@@ -66,8 +66,11 @@ public class ConnectionXmlUtils {
                     } else if ("auth".equalsIgnoreCase(name)) {
                         connectionProperties.setAuth(String.valueOf(data == null ? "" : data));
                     } else if ("orderNo".equalsIgnoreCase(name)) {
-                        connectionProperties.setOrderNo(Integer.valueOf(String.valueOf(data == null ? 0 : data)));
+                        connectionProperties.setOrderNo(Integer.valueOf(String.valueOf(data == null ? -1 : data)));
                     }
+                }
+                if (connectionProperties.getOrderNo() == -1) {
+                    connectionProperties.setOrderNo(resultList.size());
                 }
                 resultList.add(connectionProperties);
             }
