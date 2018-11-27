@@ -80,15 +80,6 @@ public class RdmLeftMenuController {
         TreeItem<ConnectionTreeCell.TreeItemData> rootItem = new TreeItem<>(rootItemData);
         conTree.setRoot(rootItem);
 
-//        rootItem.getChildren().addListener((ListChangeListener<? super TreeItem<ConnectionTreeCell.TreeItemData>>) c -> {
-//            if (c.next()) {
-//                System.out.println(c.getAddedSize());
-//                System.out.println(c.getRemovedSize());
-//                System.out.println(c.getFrom());
-//                System.out.println(c.getTo());
-//            }
-//        });
-
         // 创建点击事件
         conTree.setCellFactory(view -> {
             ConnectionTreeCell cell = new ConnectionTreeCell();
@@ -111,8 +102,13 @@ public class RdmLeftMenuController {
                     children.add(currentIndex, previousItem);
                     itemData.setBottom(false);
                     if (currentIndex == 1) {
+                        // 上移节点是第二个
                         itemData.setTop(true);
                         previousItem.getValue().setTop(false);
+                    }
+                    if (currentIndex == children.size() - 1) {
+                        // 上移节点是最后一个，则倒数第二个节点成为最后一个节点
+                        previousItem.getValue().setBottom(true);
                     }
                 }
             });
@@ -134,8 +130,13 @@ public class RdmLeftMenuController {
                     children.add(currentIndex, nextItem);
                     itemData.setTop(false);
                     if (currentIndex == children.size() - 2) {
+                        // 下移节点是倒数第二个
                         itemData.setBottom(true);
                         nextItem.getValue().setBottom(false);
+                    }
+                    if (currentIndex == 0) {
+                        // 下移节点是第一个，则下一个节点变为第一个节点
+                        nextItem.getValue().setTop(true);
                     }
                 }
             });
@@ -210,6 +211,12 @@ public class RdmLeftMenuController {
                             iterator.remove();
                         }
                     }
+                }
+                ObservableList<TreeItem<ConnectionTreeCell.TreeItemData>> children = rootItem.getChildren();
+                if (!children.isEmpty()) {
+                    // 设置节点状态
+                    children.get(0).getValue().setTop(true);
+                    children.get(children.size() - 1).getValue().setBottom(true);
                 }
             }
         });

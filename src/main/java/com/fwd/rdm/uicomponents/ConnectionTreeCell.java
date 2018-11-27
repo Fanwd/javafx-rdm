@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.control.TreeCell;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -75,30 +76,35 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
             // 上移按钮点击事件
             if (null != upEvent) {
                 upEvent.handle(event);
+                event.consume();
             }
         });
         downLabel.setOnMouseClicked(event -> {
             // 下移按钮点击事件
             if (null != downEvent) {
                 downEvent.handle(event);
+                event.consume();
             }
         });
         addLabel.setOnMouseClicked(event -> {
             // 新增按钮点击事件
             if (null != addEvent) {
                 addEvent.handle(event);
+                event.consume();
             }
         });
         refreshLabel.setOnMouseClicked(event -> {
             // 刷新按钮点击事件
             if (null != refreshEvent) {
                 refreshEvent.handle(event);
+                event.consume();
             }
         });
         deleteLabel.setOnMouseClicked(event -> {
             // 删除按钮点击事件
             if (deleteEvent != null) {
                 deleteEvent.handle(event);
+                event.consume();
             }
         });
 
@@ -214,33 +220,6 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
                 textLabel.setText(item.getConnectionPropertiesObjectProperty().getName());
                 textLabel.setGraphic(getTreeItem().getGraphic());
             }
-
-//            item.removeProperty().addListener((observable, oldValue, newValue) -> {
-//                if (newValue) {
-//                    upLabel.setVisible(false);
-//                    downLabel.setVisible(false);
-//                    addLabel.setVisible(false);
-//                    refreshLabel.setVisible(false);
-//                    deleteLabel.setVisible(false);
-//                }
-//            });
-//
-//            item.topProperty().addListener((observable, oldValue, newValue) -> {
-//                if (newValue) {
-//                    upLabel.setVisible(false);
-//                } else {
-//                    upLabel.setVisible(true);
-//                }
-//            });
-//
-//            item.bottomProperty().addListener((observable, oldValue, newValue) -> {
-//                if (newValue) {
-//                    downLabel.setVisible(false);
-//                } else {
-//                    downLabel.setVisible(true);
-//                }
-//            });
-
         }
     }
 
