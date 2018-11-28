@@ -51,18 +51,21 @@ public class RdmAddHashController {
         String field = fieldTextArea.getText();
         String value = valueTextArea.getText();
         if (StringUtils.isEmpty(field)) {
-            loggerUtils.warn("Field should not be empty!!");
+            loggerUtils.warn("域不可以为空！！");
             return;
         }
         if (StringUtils.isEmpty(value)) {
-            loggerUtils.warn("Value should not be empty!!");
+            loggerUtils.warn("值不可以为空！！");
             return;
         }
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();
         String currentKey = rdmCenterObservableData.getCurrentKey();
-        if (redisService.hset(currentConnectionProperties, currentKey, field, value)) {
+        if (redisService.hsetnx(currentConnectionProperties, currentKey, field, value)) {
             rdmCenterObservableData.publishUpdateHashEvent();
             this.cancel();
+        } else {
+            loggerUtils.warn("相同的域已经存在！！");
+            return;
         }
     }
 

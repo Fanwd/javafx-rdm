@@ -150,6 +150,8 @@ public class RdmAddController {
     private void close() {
         keyTextField.setText(null);
         typeChoiceBox.setValue("string");
+        scoreTextField.setText(null);
+        fieldTextArea.setText(null);
         valueTextArea.setText(null);
         ((Stage) rootStackPane.getScene().getWindow()).close();
     }

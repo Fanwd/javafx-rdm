@@ -8,6 +8,7 @@ import com.fwd.rdm.data.domain.RedisObservableData;
 import com.fwd.rdm.enums.KeyTypeEnum;
 import com.fwd.rdm.enums.ViewTypeEnum;
 import com.fwd.rdm.service.RedisService;
+import com.fwd.rdm.utils.AlertUtils;
 import com.fwd.rdm.utils.DragUtils;
 import com.fwd.rdm.utils.JsonUtils;
 import com.fwd.rdm.utils.LoggerUtils;
@@ -218,6 +219,7 @@ public class RdmHashModuleController {
         }
         tableHashDataList.clear();
         tableHashDataList.addAll(hashDataList);
+        loggerUtils.alertInfo("保存成功！！");
     }
 
     /**
@@ -236,6 +238,9 @@ public class RdmHashModuleController {
         HashData selectedItem = dataTableView.getSelectionModel().getSelectedItem();
         if (null == selectedItem) {
             loggerUtils.alertWarn("Please select a data!!");
+            return;
+        }
+        if (!AlertUtils.isWarnOK("确认删除？")) {
             return;
         }
         String field = selectedItem.getField();

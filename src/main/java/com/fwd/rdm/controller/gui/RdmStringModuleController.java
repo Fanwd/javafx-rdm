@@ -104,7 +104,7 @@ public class RdmStringModuleController {
         // 字符串
         redisService.set(currentConnectionProperties, currentKey, value);
         this.redisObservableData.setValue(value);
-        loggerUtils.info("save success");
+        loggerUtils.alertInfo("保存成功！！");
     }
 
     /**

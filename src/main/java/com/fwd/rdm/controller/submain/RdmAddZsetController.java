@@ -55,11 +55,11 @@ public class RdmAddZsetController {
         String value = valueTextArea.getText();
         String scoreStr = scoreTextField.getText();
         if (StringUtils.isEmpty(scoreStr)) {
-            loggerUtils.warn("Score should not be empty!!");
+            loggerUtils.warn("分数不可以为空！！");
             return;
         }
         if (StringUtils.isEmpty(value)) {
-            loggerUtils.warn("Value should not be empty!!");
+            loggerUtils.warn("值不可以为空！！");
             return;
         }
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();

@@ -56,10 +56,10 @@ public class RdmNewConnectionFormController {
             connectionProperties.setAuth(auth.getText());
             if (newConnectionService.testConnection(connectionProperties)) {
                 messageLabel.setTextFill(Color.LIGHTGREEN);
-                messageLabel.setText("Connection Success");
+                messageLabel.setText("连接成功");
             } else {
                 messageLabel.setTextFill(Color.RED);
-                messageLabel.setText("Connection Failed");
+                messageLabel.setText("连接失败");
             }
         } catch (Exception ex) {
             ex.printStackTrace();

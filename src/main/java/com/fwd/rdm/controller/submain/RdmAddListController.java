@@ -47,7 +47,7 @@ public class RdmAddListController {
     public void add() {
         String value = valueTextArea.getText();
         if (StringUtils.isEmpty(value)) {
-            loggerUtils.warn("Value should not be empty!!");
+            loggerUtils.warn("值不可以为空！！");
             return;
         }
         ConnectionProperties currentConnectionProperties = rdmCenterObservableData.getCurrentConnectionProperties();

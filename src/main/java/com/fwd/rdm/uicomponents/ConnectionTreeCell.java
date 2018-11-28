@@ -7,15 +7,14 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.beans.property.*;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.OverrunStyle;
-import javafx.scene.control.TreeCell;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 /**
  * @Author: fanwd
@@ -59,6 +58,11 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
      */
     private HBox graphicBox = new HBox(upLabel, downLabel, addLabel, refreshLabel, deleteLabel);
     private StackPane pane = new StackPane(textLabel, graphicBox);
+
+    /**
+     * 提示框
+     */
+    private Alert alert = new Alert(Alert.AlertType.WARNING, null, ButtonType.OK, ButtonType.CANCEL);
 
     private EventHandler<? super MouseEvent> upEvent;
     private EventHandler<? super MouseEvent> downEvent;
@@ -104,7 +108,9 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
         deleteLabel.setOnMouseClicked(event -> {
             // 删除按钮点击事件
             if (deleteEvent != null) {
-                deleteEvent.handle(event);
+                if (isAlertOK("确认删除？")) {
+                    deleteEvent.handle(event);
+                }
                 event.consume();
             }
         });
@@ -256,6 +262,15 @@ public class ConnectionTreeCell extends TreeCell<ConnectionTreeCell.TreeItemData
      */
     public void setLabelFill(Paint paint) {
         textLabel.setTextFill(paint);
+    }
+
+    /**
+     * 提示并返回结果
+     */
+    private boolean isAlertOK(String text) {
+        alert.setContentText(text);
+        Optional<ButtonType> buttonType = alert.showAndWait();
+        return ButtonType.OK.equals(buttonType.orElse(ButtonType.CANCEL));
     }
 
     public static class TreeData extends TreeItemData {

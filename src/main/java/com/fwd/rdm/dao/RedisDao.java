@@ -189,10 +189,22 @@ public class RedisDao {
 
     /**
      * 保存Hash数据
+     *
+     * @return 如果是新建域返回1，如果是修改域返回0
      */
     public boolean hset(ConnectionProperties connectionProperties, String key, String field, String value) {
         RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
         return redisCommands.hset(key, field, value);
+    }
+
+    /**
+     * 保存hash数据
+     *
+     * @return 域不存在时新建域返回1，如果域已存在返回0
+     */
+    public boolean hsetnx(ConnectionProperties connectionProperties, String key, String field, String value) {
+        RedisCommands<String, String> redisCommands = this.getRedisCommands(connectionProperties);
+        return redisCommands.hsetnx(key, field, value);
     }
 
     /**

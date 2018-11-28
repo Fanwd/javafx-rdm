@@ -36,6 +36,7 @@ public interface RedisService {
 
     /**
      * 查询key是否存在
+     *
      * @return 存在返回true；不存在返回false
      */
     boolean exists(ConnectionProperties connectionProperties, String key);
@@ -47,6 +48,7 @@ public interface RedisService {
 
     /**
      * 将Key设置为持久的（永不过期）
+     *
      * @return 设置成功返回1，key不存在或者key已经是持久的返回0
      */
     boolean persist(ConnectionProperties connectionProperties, String key);
@@ -68,8 +70,17 @@ public interface RedisService {
 
     /**
      * 保存hash数据
+     *
+     * @return 如果是新建域返回1，如果是修改域返回0
      */
     boolean hset(ConnectionProperties connectionProperties, String key, String field, String value);
+
+    /**
+     * 保存hash数据
+     *
+     * @return 域不存在时新建域返回1，如果域已存在返回0
+     */
+    boolean hsetnx(ConnectionProperties connectionProperties, String key, String field, String value);
 
     /**
      * Hash删除域值

@@ -66,7 +66,7 @@ public class LoggerUtils {
 
     private void showAlert(String text, Alert.AlertType alertType) {
         Alert alert = new Alert(alertType, text);
-        alert.showAndWait();
+        alert.show();
     }
 
     private void showInStatusBar(String text, Color textColor, FontAwesomeIconView graphic) {
