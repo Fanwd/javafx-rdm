@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @Date: Create in 21:45 2018/11/14
  */
 @FXMLController
-@FXMLView(value = "/rdm/views/submain/rdmAdd.fxml", css = {"/rdm/css/rdm.css"})
+@FXMLView(value = "/rdm/views/submain/rdmAdd.fxml", bundle = "language.ui", css = {"/rdm/css/rdm.css"})
 public class RdmAddView extends AbstractSubFxmlView {
 
     @Autowired

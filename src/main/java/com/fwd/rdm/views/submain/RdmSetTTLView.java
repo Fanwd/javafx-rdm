@@ -1,11 +1,7 @@
 package com.fwd.rdm.views.submain;
 
-import com.fwd.rdm.utils.StageHolder;
-import de.felixroske.jfxsupport.AbstractFxmlView;
 import de.felixroske.jfxsupport.FXMLController;
 import de.felixroske.jfxsupport.FXMLView;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 
 /**
  * @Author: fanwd
@@ -13,7 +9,7 @@ import javafx.stage.Stage;
  * @Date: Create in 14:19 2018/11/23
  */
 @FXMLController
-@FXMLView(value = "/rdm/views/submain/rdmSetTTL.fxml", css = {"/rdm/css/rdm.css"})
+@FXMLView(value = "/rdm/views/submain/rdmSetTTL.fxml", bundle = "language.ui", css = {"/rdm/css/rdm.css"})
 public class RdmSetTTLView extends AbstractSubFxmlView {
 
     public void show() {

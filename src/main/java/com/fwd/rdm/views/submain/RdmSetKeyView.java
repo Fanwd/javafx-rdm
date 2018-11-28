@@ -9,7 +9,7 @@ import de.felixroske.jfxsupport.FXMLView;
  * @Date: Create in 16:24 2018/11/26
  */
 @FXMLController
-@FXMLView(value = "/rdm/views/submain/rdmSetKey.fxml", css = {"/rdm/css/rdm.css"})
+@FXMLView(value = "/rdm/views/submain/rdmSetKey.fxml", bundle = "language.ui", css = {"/rdm/css/rdm.css"})
 public class RdmSetKeyView extends AbstractSubFxmlView {
 
     public void show() {

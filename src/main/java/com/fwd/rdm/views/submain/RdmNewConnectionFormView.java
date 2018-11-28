@@ -10,6 +10,6 @@ import de.felixroske.jfxsupport.FXMLView;
  * @Date: Create in 21:19 2018/11/12
  */
 @FXMLController
-@FXMLView(value = "/rdm/views/submain/rdmNewConnectionForm.fxml", css = {"/rdm/css/rdm.css"})
+@FXMLView(value = "/rdm/views/submain/rdmNewConnectionForm.fxml", bundle = "language.ui", css = {"/rdm/css/rdm.css"})
 public class RdmNewConnectionFormView extends AbstractFxmlView {
 }
