@@ -1,5 +1,7 @@
 package com.fwd.rdm.controller.main;
 
+import com.fwd.rdm.language.LanguageHelper;
+import com.fwd.rdm.language.MessageCode;
 import com.fwd.rdm.utils.LoggerUtils;
 import com.fwd.rdm.utils.StageHolder;
 import com.fwd.rdm.views.gui.RdmCenterView;
@@ -41,6 +43,9 @@ public class RdmMainController {
     @Autowired
     private LoggerUtils loggerUtils;
 
+    @Autowired
+    private LanguageHelper languageHelper;
+
     /**
      * 系统初始化
      */
@@ -70,8 +75,9 @@ public class RdmMainController {
         if (scene == null) {
             scene = new Scene(rdmNewConnectionFormView.getView());
         }
-        Stage childStage = StageHolder.getChildStage("New Connection");
+        Stage childStage = StageHolder.getChildStage(languageHelper.getMessage(MessageCode.NEW_CONNECTION));
         childStage.setScene(scene);
         childStage.show();
     }
+
 }

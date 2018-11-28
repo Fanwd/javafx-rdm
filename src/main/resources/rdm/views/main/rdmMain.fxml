@@ -14,7 +14,7 @@
         <BorderPane fx:id="bodyPane">
             <top>
                 <ToolBar>
-                    <Button text="新建连接" onAction="#newConnection" prefWidth="240">
+                    <Button text="%newConnection" onAction="#newConnection" prefWidth="240">
                         <graphic>
                             <FontAwesomeIconView fill="green" glyphName="PLUS_CIRCLE"></FontAwesomeIconView>
                         </graphic>
