@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @Author: fanwd
- * @Description:
+ * @Description: 状态栏提示
  * @Date: Create in 22:58 2018/11/13
  */
 @Component

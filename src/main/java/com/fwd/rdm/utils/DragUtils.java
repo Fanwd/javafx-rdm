@@ -7,7 +7,7 @@ import javafx.scene.layout.Region;
 
 /**
  * @Author: fanwd
- * @Description:
+ * @Description: 拖拽工具
  * @Date: Create in 14:23 2018/11/20
  */
 public class DragUtils {
